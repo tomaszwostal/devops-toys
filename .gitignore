@@ -1,0 +1,14 @@
+charts/**/charts
+temp/
+tests/
+wsl2/src/
+.env
+devops-toys
+devops-toys.pub
+Brewfile.lock.json
+config-windows.yaml
+devopos-toys.ca.crt
+kubeconfig
+kuttl-minimal.yaml
+ca.crt
+ca.key

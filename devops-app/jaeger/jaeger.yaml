@@ -1,0 +1,151 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jaeger
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  project: monitoring
+  destination:
+    namespace: jaeger
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://jaegertracing.github.io/helm-charts
+    chart: jaeger
+    targetRevision: 0.72.1
+    helm:
+      releaseName: jaeger
+      values: |-
+        provisionDataStore:
+          cassandra: true
+
+        nameOverride: "jaeger"
+        fullnameOverride: "jaeger"
+
+        networkPolicy:
+          enabled: false
+
+        cassandra:
+          persistence:
+            enabled: false
+
+        ingester:
+          enabled: false
+          serviceMonitor:
+            enabled: true
+            additionalLabels:
+              release: monitoring
+
+        agent:
+          resources:
+          serviceMonitor:
+            enabled: true
+            additionalLabels:
+              release: monitoring
+
+        collector:
+          service:
+            grpc:
+              port: 14250
+              name: grpc
+            http:
+              port: 14268
+              name: http
+            zipkin:
+              port: 9411
+              name: zipkin
+            otlp:
+              grpc:
+                port: 4317
+                name: otlp-grpc
+              http:
+                port: 4318
+                name: otlp-http
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: local.devops
+              nginx.ingress.kubernetes.io/rewrite-target: /
+            path: /
+            hosts:
+              - 'jaeger-colector.local.devops'
+            tls:
+              - secretName: 'tls-jaeger-collector.local.devops'
+                hosts:
+                  - 'jaeger-collector.local.devops'
+          resources:
+          serviceMonitor:
+            enabled: true
+            additionalLabels:
+              release: monitoring
+          networkPolicy:
+            enabled: false
+
+        query:
+          enabled: true
+          agentSidecar:
+            enabled: true
+          extraEnv:
+            - name: METRICS_STORAGE_TYPE
+              value: prometheus
+            - name: PROMETHEUS_SERVER_URL
+              value: monitoring-prometheus.monitoring.svc:9090
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: local.devops
+              nginx.ingress.kubernetes.io/rewrite-target: /
+            path: /
+            hosts:
+              - 'jaeger.local.devops'
+            tls:
+              - secretName: 'tls-jaeger.local.devops'
+                hosts:
+                  - 'jaeger.local.devops'
+            health:
+              exposed: false
+          serviceMonitor:
+            enabled: true
+            additionalLabels:
+              release: monitoring
+          networkPolicy:
+            enabled: false
+
+        hotrod:
+          enabled: true
+          replicaCount: 1
+          extraArgs:
+            - --otel-exporter=otlp
+            - --jaeger-ui=http://jaeger.local.devops
+          extraEnv:
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://jaeger-collector:4318
+            - name: JAEGER_TAGS
+              value: app=hotrod
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: local.devops
+              nginx.ingress.kubernetes.io/rewrite-target: /
+              sidecar.istio.io/inject: 'true'
+              traffic.sidecar.istio.io/includeInboundPorts: ""
+              traffic.sidecar.istio.io/excludeInboundPorts: "80,443"
+            path: /
+            hosts:
+              - 'hotrod.local.devops'
+            tls:
+              - secretName: 'tls-hotrod.local.devops'
+                hosts:
+                  - 'hotrod.local.devops'
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=false

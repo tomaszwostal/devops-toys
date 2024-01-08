@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - argo-cd
+  - argo-events
+  - argo-workflows
+  - bootstrap
+  - cert-manager
+  - cnpg
+  - devops-app
+  - grafana-loki
+  - grafana-promtail
+  - ingress-nginx
+  - jaeger
+  #  - knative
+  - kube-prometheus-stack
+  - linkerd
+  - linkerd-jaeger
+  - linkerd-viz
+  - metallb
+  - minio
+  - sealed-secrets
+  - sonarqube
+  - trust-manager

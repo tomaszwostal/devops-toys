@@ -1,0 +1,275 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana-loki
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: monitoring
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: loki-distributed
+    targetRevision: 0.77.0
+    helm:
+      releaseName: grafana-loki
+      values: |-
+        nameOverride: grafana-loki
+        fullnameOverride: grafana-loki
+        loki:
+          config: |
+            auth_enabled: false
+
+            server:
+              {{- toYaml .Values.loki.server | nindent 6 }}
+
+            common:
+              compactor_address: http://{{ include "loki.compactorFullname" . }}:3100
+
+            distributor:
+              ring:
+                kvstore:
+                  store: memberlist
+
+            memberlist:
+              join_members:
+                - {{ include "loki.fullname" . }}-memberlist
+
+            ingester_client:
+              grpc_client_config:
+                grpc_compression: gzip
+
+            ingester:
+              lifecycler:
+                ring:
+                  kvstore:
+                    store: memberlist
+                  replication_factor: 1
+              chunk_idle_period: 30m
+              chunk_block_size: 262144
+              chunk_encoding: snappy
+              chunk_retain_period: 1m
+              max_transfer_retries: 0
+              wal:
+                dir: /var/loki/wal
+
+            limits_config:
+              enforce_metric_name: false
+              reject_old_samples: true
+              reject_old_samples_max_age: 168h
+              max_cache_freshness_per_query: 10m
+              split_queries_by_interval: 15m
+
+            {{- if .Values.loki.schemaConfig}}
+            schema_config:
+            {{- toYaml .Values.loki.schemaConfig | nindent 2}}
+            {{- end}}
+            {{- if .Values.loki.storageConfig}}
+            storage_config:
+            {{- if .Values.indexGateway.enabled}}
+            {{- $indexGatewayClient := dict "server_address" (printf "dns:///%s:9095" (include "loki.indexGatewayFullname" .)) }}
+            {{- $_ := set .Values.loki.storageConfig.boltdb_shipper "index_gateway_client" $indexGatewayClient }}
+            {{- end}}
+            {{- toYaml .Values.loki.storageConfig | nindent 2}}
+            {{- if .Values.memcachedIndexQueries.enabled }}
+              index_queries_cache_config:
+                memcached_client:
+                  addresses: dnssrv+_memcached-client._tcp.{{ include "loki.memcachedIndexQueriesFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+                  consistent_hash: true
+            {{- end}}
+            {{- end}}
+
+            runtime_config:
+              file: /var/{{ include "loki.name" . }}-runtime/runtime.yaml
+
+            chunk_store_config:
+              max_look_back_period: 0s
+              {{- if .Values.memcachedChunks.enabled }}
+              chunk_cache_config:
+                embedded_cache:
+                  enabled: false
+                memcached_client:
+                  consistent_hash: true
+                  addresses: dnssrv+_memcached-client._tcp.{{ include "loki.memcachedChunksFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+              {{- end }}
+              {{- if .Values.memcachedIndexWrites.enabled }}
+              write_dedupe_cache_config:
+                memcached_client:
+                  consistent_hash: true
+                  addresses: dnssrv+_memcached-client._tcp.{{ include "loki.memcachedIndexWritesFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+              {{- end }}
+
+            table_manager:
+              retention_deletes_enabled: false
+              retention_period: 0s
+
+            query_range:
+              align_queries_with_step: true
+              max_retries: 5
+              cache_results: true
+              results_cache:
+                cache:
+                  {{- if .Values.memcachedFrontend.enabled }}
+                  memcached_client:
+                    addresses: dnssrv+_memcached-client._tcp.{{ include "loki.memcachedFrontendFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+                    consistent_hash: true
+                  {{- else }}
+                  embedded_cache:
+                    enabled: true
+                    ttl: 24h
+                  {{- end }}
+
+            frontend_worker:
+              {{- if .Values.queryScheduler.enabled }}
+              scheduler_address: {{ include "loki.querySchedulerFullname" . }}:9095
+              {{- else }}
+              frontend_address: {{ include "loki.queryFrontendFullname" . }}-headless:9095
+              {{- end }}
+
+            frontend:
+              log_queries_longer_than: 5s
+              compress_responses: true
+              {{- if .Values.queryScheduler.enabled }}
+              scheduler_address: {{ include "loki.querySchedulerFullname" . }}:9095
+              {{- end }}
+              tail_proxy_url: http://{{ include "loki.querierFullname" . }}:3100
+
+            compactor:
+              shared_store: filesystem
+
+            ruler:
+              storage:
+                type: local
+                local:
+                  directory: /etc/loki/rules
+              ring:
+                kvstore:
+                  store: memberlist
+              rule_path: /tmp/loki/scratch
+              alertmanager_url: https://alertmanager.xx
+              external_url: https://alertmanager.xx
+          schemaConfig:
+            configs:
+            - from: "2020-09-07"
+              store: boltdb-shipper
+              object_store: filesystem
+              schema: v11
+              index:
+                prefix: loki_index_
+                period: 24h
+          storageConfig:
+            boltdb_shipper:
+              shared_store: filesystem
+              active_index_directory: /var/loki/index
+              cache_location: /var/loki/cache
+              cache_ttl: 168h
+            filesystem:
+              directory: /var/loki/chunks
+        serviceMonitor:
+          enabled: true
+          labels:
+            release: monitoring
+
+        ingester:
+          kind: StatefulSet
+
+        distributor:
+          replicas: 1
+
+        querier:
+          replicas: 1
+
+        queryFrontend:
+          replicas: 1
+
+        queryScheduler:
+          enabled: false
+
+        tableManager:
+          enabled: false
+
+        ingress:
+          enabled: false
+          ingressClassName: nginx
+          annotations:
+            cert-manager.io/cluster-issuer: local.devops
+        #    nginx.ingress.kubernetes.io/auth-type: basic
+        #    nginx.ingress.kubernetes.io/auth-secret: loki-distributed-basic-auth
+        #    nginx.ingress.kubernetes.io/auth-secret-type: auth-map
+        #    nginx.ingress.kubernetes.io/configuration-snippet: |
+        #      proxy_set_header X-Scope-OrgID $remote_user;
+          paths:
+            distributor:
+              - /api/prom/push
+              - /loki/api/v1/push
+            querier:
+              - /api/prom/tail
+              - /loki/api/v1/tail
+            query-frontend:
+              - /loki/api
+            ruler:
+              - /api/prom/rules
+              - /loki/api/v1/rules
+              - /prometheus/api/v1/rules
+              - /prometheus/api/v1/alerts
+          hosts:
+            - loki.local.devops
+          tls:
+            - secretName: tls-loki.local.devops
+              hosts:
+                - loki.local.devops
+        gateway:
+          enabled: true
+          replicas: 1
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: local.devops
+            hosts:
+              - host: gateway-loki.local.devops
+                paths:
+                  - path: /
+                    pathType: ImplementationSpecific
+            tls:
+              - secretName: tls-loki-gateway.local.devops
+                hosts:
+                  - gateway-loki.local.devops
+
+        compactor:
+          enabled: false
+
+        indexGateway:
+          enabled: false
+
+        memcachedExporter:
+          enabled: true
+          podLabels:
+            release: monitoring
+
+        memcachedChunks:
+          enabled: true
+
+        memcachedFrontend:
+          enabled: false
+
+        memcachedIndexQueries:
+          enabled: false
+
+        memcachedIndexWrites:
+          enabled: false
+
+        networkPolicy:
+          enabled: false
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: loki
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=false

@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudnative-pg
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: ci-cd
+  destination:
+    namespace: cnpg-system
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://cloudnative-pg.github.io/charts
+    chart: cloudnative-pg
+    targetRevision: 0.19.1
+    helm:
+      releaseName: cloudnative-pg
+      values: |-
+        nameOverride: cloudnative-pg
+        fullnameOverride: cloudnative-pg
+        config:
+          secret: true
+        monitoring:
+          podMonitorEnabled: true
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=false

@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: core
+  destination:
+    namespace: minio
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: minio
+    targetRevision: 12.10.10
+    helm:
+      releaseName: minio
+      values: |-
+        nameOverride: minio
+        fullnameOverride: minio
+        mode: standalone
+        defaultBuckets: "argo-artifacts, sonarqube-psql"
+        auth:
+          existingSecret: minio-root
+          forcePassword: true
+          useCredentialsFile: true
+          forceNewKeys: true
+        provisioning:
+          enabled: false
+          usersExistingSecrets:
+            - centralized-minio-users
+        ingress:
+          enabled: true
+          ingressClassName: nginx
+          hostname: minio.local.devops
+          path: /
+          pathType: ImplementationSpecific
+          servicePort: minio-api
+          annotations:
+            cert-manager.io/cluster-issuer: local.devops
+          tls: true
+          selfSigned: false
+  syncPolicy:
+    automated:
+      selfHeal: false
+      prune: false
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

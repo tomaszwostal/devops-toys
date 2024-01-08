@@ -1,0 +1,107 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: ci-cd
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-cd
+    targetRevision: 5.50.1
+    helm:
+      releaseName: argocd
+      values: |-
+        nameOverride: argocd
+        fullnameOverride: argocd
+        controller:
+          metrics:
+            enabled: true
+            serviceMonitor:
+              enabled: true
+              labels:
+                release: monitoring
+              selector:
+                release: monitoring
+        dex:
+          enabled: false
+          serviceMonitor:
+            enabled: false
+            labels:
+              release: monitoring
+            selector:
+              release: monitoring
+        redis:
+          enabled: true
+          exporter:
+            enabled: true
+          metrics:
+            enabled: true
+            serviceMonitor:
+              enabled: true
+              labels:
+                release: monitoring
+              selector:
+                release: monitoring
+        server:
+          metrics:
+            enabled: true
+            serviceMonitor:
+              enabled: true
+              labels:
+                release: monitoring
+              selector:
+                release: monitoring
+          ingress:
+            enabled: true
+            annotations:
+              cert-manager.io/cluster-issuer: local.devops
+              nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+            ingressClassName: nginx
+            hosts:
+              - cd.local.devops
+            paths:
+              - /
+            pathType: Prefix
+            tls:
+              - secretName: tls-cd.local.devops
+                hosts:
+                  - cd.local.devops
+            https: true
+          ingressGrpc:
+            enabled: true
+            ingressClassName: nginx
+          metrics:
+            enabled: true
+            serviceMonitor:
+              enabled: true
+              labels:
+                release: monitoring
+              selector:
+                release: monitoring
+        applicationSet:
+          enabled: true
+          metrics:
+            enabled: true
+            serviceMonitor:
+              enabled: true
+              labels:
+                release: monitoring
+              selector:
+                release: monitoring
+        notifications:
+          enabled: true
+  syncPolicy:
+    automated:
+      selfHeal: false
+      prune: false
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

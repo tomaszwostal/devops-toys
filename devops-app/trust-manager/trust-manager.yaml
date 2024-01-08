@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trust-manager
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-99"
+spec:
+  project: core
+  destination:
+    namespace: trust-manager
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://charts.jetstack.io
+    chart: trust-manager
+    targetRevision: v0.7.0
+    helm:
+      releaseName: trust-manager
+      values: |-
+        crds:
+          enabled: true
+        app:
+          metrics:
+            service:
+              enabled: true
+              serviceMonitor:
+                enabled: true
+                prometheusInstance: monitoring-prometheus
+                labels:
+                  release: monitoring
+
+
+
+
+
+        #enableCertificateOwnerRef: true
+        prometheus:
+          enabled: true
+          servicemonitor:
+            enabled: true
+            prometheusInstance: monitoring-prometheus
+            labels:
+              release: monitoring
+          podmonitor:
+            enabled: true
+            prometheusInstance: monitoring-prometheus
+            labels:
+              release: monitoring
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=false

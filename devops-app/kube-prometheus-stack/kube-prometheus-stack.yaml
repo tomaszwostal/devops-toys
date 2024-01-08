@@ -1,0 +1,439 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-99"
+spec:
+  project: monitoring
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 52.1.0
+    helm:
+      releaseName: monitoring
+      skipCrds: true
+      values: |-
+        nameOverride: "monitoring"
+        fullnameOverride: "monitoring"
+        alertmanager:
+          enabled: true
+          ingress:
+            enabled: true
+            annotations:
+              cert-manager.io/cluster-issuer: local.devops
+            hosts:
+              - alert.local.devops
+            paths:
+              - /
+            tls:
+              - secretName: tls-alert.local.devops
+                hosts:
+                  - alert.local.devops
+        grafana:
+          defaultDashboardsTimezone: 'Europe/Warsaw'
+          defaultDashboardsEditable: false
+          ingress:
+            enabled: true
+            annotations:
+              cert-manager.io/cluster-issuer: local.devops
+            hosts:
+              - grafana.local.devops
+            paths:
+              - /
+            tls:
+              - secretName: tls-grafana.local.devops
+                hosts:
+                  - grafana.local.devops
+          plugins:
+            - grafana-piechart-panel
+            - natel-discrete-panel
+          additionalDataSources:
+            - name: Loki
+              type: loki
+              uid: loki
+              access: proxy
+              url: http://grafana-loki-query-frontend.loki.svc.cluster.local:3100
+              jsonData:
+                maxLines: 1000
+                derivedFields:
+                  - datasourceUid: jaeger
+                    matcherRegex: ((\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+))
+                    name: TraceID
+                    # url will be interpreted as query for the datasource
+                    url: '$${__value.raw}'
+                    # optional for URL Label to set a custom display label for the link.
+                    urlDisplayLabel: 'View Trace'
+            - name: Jaeger
+              type: jaeger
+              uid: jaeger
+              url: http://jaeger-query.jaeger.svc.cluster.local
+              access: proxy
+              readOnly: true
+              isDefault: false
+              jsonData:
+                tracesToLogsV2:
+                  datasourceUid: "loki"
+                  spanStartTimeShift: '1h'
+                  spanEndTimeShift: '-1h'
+                  tags: [{ key: 'component', value: 'component' }] 
+                  filterByTraceID: true
+                  filterBySpanID: true
+                  customQuery: true
+                  query: '{$${__tags}} |="$${__span.traceId}"'
+                nodeGraph:
+                  enabled: true
+              traceQuery:
+                timeShiftEnabled: true
+                spanStartTimeShift: '1h'
+                spanEndTimeShift: '-1h'
+              spanBar:
+                type: 'None'
+          dashboardProviders:
+            dashboardproviders.yaml:
+              apiVersion: 1
+              providers:
+                - disableDeletion: true
+                  editable: false
+                  folder: Loki
+                  name: loki
+                  options:
+                    path: /var/lib/grafana/dashboards/loki
+                  orgId: 1
+                  type: file
+                - disableDeletion: true
+                  editable: false
+                  folder: CI-CD
+                  name: cicd
+                  options:
+                    path: /var/lib/grafana/dashboards/cicd
+                  orgId: 1
+                  type: file
+                - disableDeletion: true
+                  editable: false
+                  folder: "Cert Manager"
+                  name: cert-manager
+                  options:
+                    path: /var/lib/grafana/dashboards/cert-manager
+                  orgId: 1
+                  type: file
+                - disableDeletion: true
+                  editable: false
+                  folder: "Jaeger"
+                  name: jaeger
+                  options:
+                    path: /var/lib/grafana/dashboards/jaeger
+                  orgId: 1
+                  type: file
+                - disableDeletion: true
+                  editable: false
+                  folder: "Linkerd"
+                  name: linkerd
+                  options:
+                    path: /var/lib/grafana/dashboards/linkerd
+                  orgId: 1
+                  type: file
+                - disableDeletion: true
+                  editable: false
+                  folder: "Nginx"
+                  name: nginx
+                  options:
+                    path: /var/lib/grafana/dashboards/nginx
+                  orgId: 1
+                  type: file
+                - disableDeletion: true
+                  editable: false
+                  folder: "Grafana K6"
+                  name: k6
+                  options:
+                    path: /var/lib/grafana/dashboards/k6
+                  orgId: 1
+                  type: file
+                - disableDeletion: true
+                  editable: false
+                  folder: "Redis"
+                  name: redis
+                  options:
+                    path: /var/lib/grafana/dashboards/redis
+                - disableDeletion: true
+                  editable: false
+                  folder: "Postgres"
+                  name: cnpg
+                  options:
+                    path: /var/lib/grafana/dashboards/cnpg
+          dashboards:
+            cicd:
+              argo-cd:
+                url: https://raw.githubusercontent.com/argoproj/argo-cd/master/examples/dashboard.json
+                token: ''
+            cert-manager:
+              cert-manager:
+                gnetId: 11001
+                revision: 1
+                datasource: Prometheus
+            jaeger:
+              jaeger_all_in_one:
+                gnetId: 12535
+                revision: 1
+                datasource: Prometheus
+            loki:
+              loki_global_metrics:
+                gnetId: 13407
+                revision: 1
+                datasource: Prometheus
+              loki_stack_monitoring:
+                gnetId: 14055
+                revision: 5
+                datasource:
+                  - name: DS_PROMETHEUS
+                    value: Prometheus
+                  - name: DS_LOKI
+                    value: Loki
+              loki_metrics:
+                gnetId: 17781
+                revision: 1
+                datasource: Prometheus
+            linkerd:
+              kubernetes_cluster_monitoring:
+                gnetId: 15479
+                revision: 2
+                datasource: Prometheus
+              linkerd_authority:
+                gnetId: 15482
+                revision: 3
+                datasource: Prometheus
+              linkerd_cron_job:
+                gnetId: 15483
+                revision: 3
+                datasource: Prometheus
+              linkerd_daemon_set:
+                gnetId: 15484
+                revision: 3
+                datasource: Prometheus
+              linkerd_deployment:
+                gnetId: 15475
+                revision: 7
+                datasource: Prometheus
+              linkerd_health:
+                gnetId: 15486
+                revision: 3
+                datasource: Prometheus
+              linkerd_job:
+                gnetId: 15487
+                revision: 3
+                datasource: Prometheus
+              linkerd_multicluster:
+                gnetId: 15488
+                revision: 3
+                datasource: Prometheus
+              linkerd_namespace:
+                gnetId: 15478
+                revision: 3
+                datasource: Prometheus
+              linkerd_pod:
+                gnetId: 15477
+                revision: 3
+                datasource: Prometheus
+              linkerd_replicaset:
+                gnetId: 15491
+                revision: 3
+                datasource: Prometheus
+              linkerd_replication_controller:
+                gnetId: 15492
+                revision: 4
+                datasource: Prometheus
+              linkerd_route:
+                gnetId: 15481
+                revision: 3
+                datasource: Prometheus
+              linkerd_service:
+                gnetId: 15480
+                revision: 3
+                datasource: Prometheus
+              linkerd_statefulset:
+                gnetId: 15493
+                revision: 3
+                datasource: Prometheus
+              linkerd_top_line:
+                gnetId: 15474
+                revision: 4
+              linkerd_prometheus_benchmark:
+                gnetId: 15490
+                revision: 2
+                datasource: Prometheus
+            nginx:
+              nginx_ingress_controller:
+                gnetId: 9614
+                revision: 1
+                datasource: Prometheus
+              nginx_ingress_next_gen:
+                gnetId: 14314
+                revision: 2
+                datasource: Prometheus
+            k6:
+              load_tests_nginx:
+                gnetId: 16544
+                revision: 1
+                datasource: Prometheus
+              k6_prometheus:
+                gnetId: 18030
+                revision: 8
+                datasource: Prometheus
+              k6_statsd:
+                gnetId: 13861
+                revision: 1
+                datasource: Prometheus
+            redis:
+              redis_clusters:
+                gnetId: 14615
+                revision: 1
+                datasource: Prometheus
+            cnpg:
+              clusters:
+                url: https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/grafana-dashboard.json
+                token: ''
+        prometheus:
+          ingress:
+            enabled: true
+            annotations:
+              cert-manager.io/cluster-issuer: local.devops
+            hosts:
+              - prometheus.local.devops
+            paths:
+              - /
+            tls:
+              - secretName: tls-prometheus.local.devops
+                hosts:
+                  - prometheus.local.devops
+          enabled: true
+          agentMode: false
+          prometheusSpec:
+            podMonitorSelectorNilUsesHelmValues: false
+            ruleSelectorNilUsesHelmValues: false
+            serviceMonitorSelectorNilUsesHelmValues: false
+            probeSelectorNilUsesHelmValues: false
+            # podMonitorSelector:
+            #   matchLabels:
+            #     release: monitoring
+            # serviceMonitorSelector:
+            #   matchLabels:
+            #     release: monitoring
+            
+            additionalScrapeConfigs:
+              - job_name: 'kubernetes-nodes-cadvisor'
+                scheme: https
+                tls_config:
+                  ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                  insecure_skip_verify: true
+                bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+                kubernetes_sd_configs:
+                - role: node
+                relabel_configs:
+                - action: labelmap
+                  regex: __meta_kubernetes_node_label_(.+)
+                - target_label: __address__
+                  replacement: kubernetes.default.svc:443
+                - source_labels: [__meta_kubernetes_node_name]
+                  regex: (.+)
+                  target_label: __metrics_path__
+                  replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+                metric_relabel_configs:
+                - source_labels: [__name__]
+                  regex: '(container|machine)_(cpu|memory|network|fs)_(.+)'
+                  action: keep
+                - source_labels: [__name__]
+                  regex: 'container_memory_failures_total' # unneeded large metric
+                  action: drop
+
+              - job_name: 'linkerd-controller'
+                kubernetes_sd_configs:
+                - role: pod
+                  namespaces:
+                    names:
+                    - linkerd
+                    - linkerd-viz
+                relabel_configs:
+                - source_labels:
+                  - __meta_kubernetes_pod_container_port_name
+                  action: keep
+                  regex: admin-http
+                - source_labels: [__meta_kubernetes_pod_container_name]
+                  action: replace
+                  target_label: component
+
+              - job_name: 'linkerd-service-mirror'
+                kubernetes_sd_configs:
+                - role: pod
+                relabel_configs:
+                - source_labels:
+                  - __meta_kubernetes_pod_label_component
+                  - __meta_kubernetes_pod_container_port_name
+                  action: keep
+                  regex: linkerd-service-mirror;admin-http$
+                - source_labels: [__meta_kubernetes_pod_container_name]
+                  action: replace
+                  target_label: component
+
+              - job_name: 'linkerd-proxy'
+                kubernetes_sd_configs:
+                - role: pod
+                relabel_configs:
+                - source_labels:
+                  - __meta_kubernetes_pod_container_name
+                  - __meta_kubernetes_pod_container_port_name
+                  - __meta_kubernetes_pod_label_linkerd_io_control_plane_ns
+                  action: keep
+                  regex: linkerd-proxy;linkerd-admin;linkerd$
+                - source_labels: [__meta_kubernetes_namespace]
+                  action: replace
+                  target_label: namespace
+                - source_labels: [__meta_kubernetes_pod_name]
+                  action: replace
+                  target_label: pod
+                # special case k8s' "job" label, to not interfere with prometheus' "job"
+                # label
+                # __meta_kubernetes_pod_label_linkerd_io_proxy_job=foo =>
+                # k8s_job=foo
+                - source_labels: [__meta_kubernetes_pod_label_linkerd_io_proxy_job]
+                  action: replace
+                  target_label: k8s_job
+                # drop __meta_kubernetes_pod_label_linkerd_io_proxy_job
+                - action: labeldrop
+                  regex: __meta_kubernetes_pod_label_linkerd_io_proxy_job
+                # __meta_kubernetes_pod_label_linkerd_io_proxy_deployment=foo =>
+                # deployment=foo
+                - action: labelmap
+                  regex: __meta_kubernetes_pod_label_linkerd_io_proxy_(.+)
+                # drop all labels that we just made copies of in the previous labelmap
+                - action: labeldrop
+                  regex: __meta_kubernetes_pod_label_linkerd_io_proxy_(.+)
+                # __meta_kubernetes_pod_label_linkerd_io_foo=bar =>
+                # foo=bar
+                - action: labelmap
+                  regex: __meta_kubernetes_pod_label_linkerd_io_(.+)
+                # Copy all pod labels to tmp labels
+                - action: labelmap
+                  regex: __meta_kubernetes_pod_label_(.+)
+                  replacement: __tmp_pod_label_$1
+                # Take `linkerd_io_` prefixed labels and copy them without the prefix
+                - action: labelmap
+                  regex: __tmp_pod_label_linkerd_io_(.+)
+                  replacement:  __tmp_pod_label_$1
+                # Drop the `linkerd_io_` originals
+                - action: labeldrop
+                  regex: __tmp_pod_label_linkerd_io_(.+)
+                # Copy tmp labels into real labels
+                - action: labelmap
+                  regex: __tmp_pod_label_(.+)
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=false

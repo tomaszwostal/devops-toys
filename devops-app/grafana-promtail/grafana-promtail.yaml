@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana-promtail
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: monitoring
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: promtail
+    targetRevision: 6.15.3
+    helm:
+      releaseName: grafana-promtail
+      values: |-
+        nameOverride: "grafana-promtail"
+        fullnameOverride: "grafana-promtail"
+        serviceMonitor:
+          enabled: true
+          additionalLabels:
+            release: monitoring
+        extraArgs:
+          - -client.external-labels=cluster=local.devops
+        config:
+          clients:
+            - url: http://grafana-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
+        pipelineStages:
+          - match:
+              selector: '{component="hotrod"}'
+              stages:
+              - regex:
+                  expression: ".*(?P<trace>trace_id\"\\S)\\s\"(?P<traceID>[a-zA-Z\\d]+).*"
+                  traceID: traceID
+              - labels:
+                  traceID:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: promtail
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=false

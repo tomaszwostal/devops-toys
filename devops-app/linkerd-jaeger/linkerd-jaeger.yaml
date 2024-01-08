@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkerd-jaeger
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: core
+  source:
+    repoURL: https://helm.linkerd.io/stable
+    chart: linkerd-jaeger
+    targetRevision: 30.12.7
+    helm:
+      releaseName: linkerd-jaeger
+      values: |-
+        jaeger:
+          enabled: false
+        # webhook:
+        #   externalSecret: true
+        #   injectCaFromSecret: cert-manager/linkerd-webhook-issuer-tls
+        collector:
+          config: |
+            receivers:
+              otlp:
+                protocols:
+                  grpc:
+                  http:
+              opencensus:
+              zipkin:
+              jaeger:
+                protocols:
+                  grpc:
+                  thrift_http:
+                  thrift_compact:
+                  thrift_binary:
+            processors:
+              batch:
+            extensions:
+              health_check:
+            exporters:
+              jaeger:
+                endpoint: jaeger-collector.jaeger.svc.cluster.local:14250
+                tls:
+                  insecure: true
+            service:
+              extensions: [health_check]
+              pipelines:
+                traces:
+                  receivers: [otlp,opencensus,zipkin,jaeger]
+                  processors: [batch]
+                  exporters: [jaeger]
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: linkerd-jaeger
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=false
