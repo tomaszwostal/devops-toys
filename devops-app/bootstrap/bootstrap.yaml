@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://github.com/tomaszwostal/devops-toys.git
     path: devops-app/bootstrap/manifests
-    targetRevision: v0.1
+    targetRevision: v0.2
   syncPolicy:
     automated:
       selfHeal: true
