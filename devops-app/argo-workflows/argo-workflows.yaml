@@ -31,15 +31,28 @@ spec:
             secretKeySecret:
               name: minio
               key: secretkey
-        singleNamespace: true
+        singleNamespace: false
         # rbac:
         #   create: true
         #   accessAllSecrets: true
         #   writeConfigmaps: true
-        # workflow:
-        #   serviceAccount:
-        #     create: true
-        #     name: "argo-workflow"
+        workflow:
+          serviceAccount:
+            create: true
+            name: argo-workflow
+          rbac:
+            create: true
+        controller:
+          rbac:
+            create: true
+            accessAllSecrets: true
+            writeConfigMaps: true
+          workflowNamespaces:
+            - argo
+            - workflows
+          workflowDefaults:
+            spec:
+              serviceAccountName: argo-workflow
         # controller:
         #   metricsConfig:
         #     enabled: true
