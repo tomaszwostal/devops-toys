@@ -244,6 +244,11 @@ Run `make bootstrap` to deploy **bootstrap** application. It contains secrets, c
 
 Run `make argocd` to change the admin password in **Argo CD**.
 
+### Argo Workflows
+
+Login to [Minio](https://minio.local.devops) and create **access key** and **secret key** for **Argo Workflows**.
+Next save them in **.env** file as **MINIO_ACCESS_KEY** and **MINIO_SECRET_KEY**.
+
 ## Exploring the cluster
 
 * [Argo CD](https://cd.local.devops) is a declarative, GitOps continuous delivery tool for Kubernetes.

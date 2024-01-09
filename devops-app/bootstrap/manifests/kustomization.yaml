@@ -13,3 +13,4 @@ resources:
   - devops-app-eventsource.yaml
   - devops-app-sensor.yaml
   - event-bus.yaml
+  - argo-workflows-minio-secret.yaml
