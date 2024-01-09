@@ -2,6 +2,7 @@ charts/**/charts
 temp/
 tests/
 wsl2/src/
+workflow-templates/
 .env
 devops-toys
 devops-toys.pub
@@ -12,3 +13,4 @@ kubeconfig
 kuttl-minimal.yaml
 ca.crt
 ca.key
+post

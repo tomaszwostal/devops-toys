@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: webhook-eventsource
+  namespace: argo-events
+spec:
+  service:
+    ports:
+      - port: 12000
+        targetPort: 12000
+  webhook:
+    devops-app:
+      port: "12000"
+      endpoint: /devops-app
+      method: POST
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webhook-eventsource
+  namespace: argo-events
+  annotations:
+    cert-manager.io/cluster-issuer: local.devops
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: events.local.devops
+    http:
+      paths:
+      - path: /devops-app
+        pathType: Prefix
+        backend:
+          service:
+            name: webhook-eventsource-eventsource-svc
+            port:
+              number: 12000
+  tls:
+  - hosts:
+    - events.local.devops
+    secretName: tls-events.local.devops

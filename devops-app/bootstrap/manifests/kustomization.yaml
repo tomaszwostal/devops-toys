@@ -10,3 +10,6 @@ resources:
   - repo-devops-toys.yaml
   - sonarqube-admin-password.yaml
   - sonarqube-psql-backup.yaml
+  - devops-app-eventsource.yaml
+  - devops-app-sensor.yaml
+  - event-bus.yaml
