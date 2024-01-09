@@ -210,7 +210,7 @@ argocd:
 all: cluster_local initial_setup add_repo ca minio sonarqube bootstrap argocd
 
 # Create minio secret for Argo Workflows
-workflows_minio:
+workflows_minio_argo:
 	kubectl --namespace argo \
 		create secret \
 		generic minio \
@@ -221,11 +221,31 @@ workflows_minio:
 		kubeseal --format yaml \
 		--controller-name=sealed-secrets \
 		--controller-namespace=sealed-secrets | \
-		tee ./devops-app/bootstrap/manifests/argo-workflows-minio-secret.yaml
-	kubectl apply -f ./devops-app/bootstrap/manifests/argo-workflows-minio-secret.yaml
-	git add ./devops-app/bootstrap/manifests/argo-workflows-minio-secret.yaml
-	git commit -m "Add MinIO secret for Argo Workflows"
+		tee ./devops-app/bootstrap/manifests/argo-minio-secret-argo.yaml
+	kubectl apply -f ./devops-app/bootstrap/manifests/argo-minio-secret-argo.yaml
+	git add ./devops-app/bootstrap/manifests/argo-minio-secret-argo.yaml
+	git commit -m "Add MinIO secret for Argo Workflows in argo namespace"
 	git push
+
+# Create minio secret for Argo Workflows
+workflows_minio_workflows:
+	kubectl --namespace workflows \
+		create secret \
+		generic minio \
+		--from-literal=accesskey=${MINIO_ACCESS_KEY} \
+		--from-literal=secretkey=${MINIO_SECRET_KEY} \
+		--output json \
+		--dry-run=client | \
+		kubeseal --format yaml \
+		--controller-name=sealed-secrets \
+		--controller-namespace=sealed-secrets | \
+		tee ./devops-app/bootstrap/manifests/argo-minio-secret-workflows.yaml
+	kubectl apply -f ./devops-app/bootstrap/manifests/argo-minio-secret-workflows.yaml
+	git add ./devops-app/bootstrap/manifests/argo-minio-secret-workflows.yaml
+	git commit -m "Add MinIO secret for Argo Workflows in workflows namespace"
+	git push
+
+workflows_minio: workflows_minio_argo workflows_minio_workflows
 
 # Destroy the local Kubernetes cluster
 destroy:
