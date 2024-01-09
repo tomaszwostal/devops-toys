@@ -77,8 +77,8 @@ spec:
                   - ci.local.devops
   syncPolicy:
     automated:
-      selfHeal: false
-      prune: false
+      selfHeal: true
+      prune: true
       allowEmpty: false
     syncOptions:
       - CreateNamespace=true
