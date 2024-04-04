@@ -115,11 +115,13 @@ ca_cert_secret:
 # Add the CA certificate to the trusted certificates
 ca_trusted:
 	# For Arch Linux
-	sudo cp ca.crt /etc/ca-certificates/trust-source/anchors
-	sudo update-ca-trust
+	# sudo cp ca.crt /etc/ca-certificates/trust-source/anchors
+	# sudo update-ca-trust
 	# For Debian/Ubuntu
 	#sudo cp ca.crt /usr/local/share/ca-certificates
 	#sudo update-ca-certificates
+	# For MacOS
+	sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ca.crt
 
 minio: minio_users minio_root
 
@@ -207,7 +209,6 @@ argocd:
 	argocd account update-password --current-password $$(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d) --new-password $(ARGOCD_PASSWORD)
 	kill $$(cat /tmp/port-forward.pid) && rm -f /tmp/port-forward.pid
 
-all: cluster_local initial_setup add_repo ca minio sonarqube bootstrap argocd
 
 # Create minio secret for Argo Workflows
 workflows_minio_argo:
@@ -247,6 +248,7 @@ workflows_minio_workflows:
 
 workflows_minio: workflows_minio_argo workflows_minio_workflows
 
+all: cluster_local initial_setup add_repo ca minio sonarqube bootstrap argocd workflows_minio
 # Destroy the local Kubernetes cluster
 destroy:
 	kind delete cluster --name devops-toys
