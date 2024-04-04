@@ -165,137 +165,137 @@ spec:
                   name: cnpg
                   options:
                     path: /var/lib/grafana/dashboards/cnpg
-          dashboards:
-            cicd:
-              argo-cd:
-                url: https://raw.githubusercontent.com/argoproj/argo-cd/master/examples/dashboard.json
-                token: ''
-            cert-manager:
-              cert-manager:
-                gnetId: 11001
-                revision: 1
-                datasource: Prometheus
-            jaeger:
-              jaeger_all_in_one:
-                gnetId: 12535
-                revision: 1
-                datasource: Prometheus
-            loki:
-              loki_global_metrics:
-                gnetId: 13407
-                revision: 1
-                datasource: Prometheus
-              loki_stack_monitoring:
-                gnetId: 14055
-                revision: 5
-                datasource:
-                  - name: DS_PROMETHEUS
-                    value: Prometheus
-                  - name: DS_LOKI
-                    value: Loki
-              loki_metrics:
-                gnetId: 17781
-                revision: 1
-                datasource: Prometheus
-            linkerd:
-              kubernetes_cluster_monitoring:
-                gnetId: 15479
-                revision: 2
-                datasource: Prometheus
-              linkerd_authority:
-                gnetId: 15482
-                revision: 3
-                datasource: Prometheus
-              linkerd_cron_job:
-                gnetId: 15483
-                revision: 3
-                datasource: Prometheus
-              linkerd_daemon_set:
-                gnetId: 15484
-                revision: 3
-                datasource: Prometheus
-              linkerd_deployment:
-                gnetId: 15475
-                revision: 7
-                datasource: Prometheus
-              linkerd_health:
-                gnetId: 15486
-                revision: 3
-                datasource: Prometheus
-              linkerd_job:
-                gnetId: 15487
-                revision: 3
-                datasource: Prometheus
-              linkerd_multicluster:
-                gnetId: 15488
-                revision: 3
-                datasource: Prometheus
-              linkerd_namespace:
-                gnetId: 15478
-                revision: 3
-                datasource: Prometheus
-              linkerd_pod:
-                gnetId: 15477
-                revision: 3
-                datasource: Prometheus
-              linkerd_replicaset:
-                gnetId: 15491
-                revision: 3
-                datasource: Prometheus
-              linkerd_replication_controller:
-                gnetId: 15492
-                revision: 4
-                datasource: Prometheus
-              linkerd_route:
-                gnetId: 15481
-                revision: 3
-                datasource: Prometheus
-              linkerd_service:
-                gnetId: 15480
-                revision: 3
-                datasource: Prometheus
-              linkerd_statefulset:
-                gnetId: 15493
-                revision: 3
-                datasource: Prometheus
-              linkerd_top_line:
-                gnetId: 15474
-                revision: 4
-              linkerd_prometheus_benchmark:
-                gnetId: 15490
-                revision: 2
-                datasource: Prometheus
-            nginx:
-              nginx_ingress_controller:
-                gnetId: 9614
-                revision: 1
-                datasource: Prometheus
-              nginx_ingress_next_gen:
-                gnetId: 14314
-                revision: 2
-                datasource: Prometheus
-            k6:
-              load_tests_nginx:
-                gnetId: 16544
-                revision: 1
-                datasource: Prometheus
-              k6_prometheus:
-                gnetId: 18030
-                revision: 8
-                datasource: Prometheus
-              k6_statsd:
-                gnetId: 13861
-                revision: 1
-                datasource: Prometheus
-            redis:
-              redis_clusters:
-                gnetId: 14615
-                revision: 1
-                datasource: Prometheus
-            cnpg:
-              clusters:
-                url: https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/grafana-dashboard.json
-                token: ''
+          # dashboards:
+          #   cicd:
+          #     argo-cd:
+          #       url: https://raw.githubusercontent.com/argoproj/argo-cd/master/examples/dashboard.json
+          #       token: ''
+          #   cert-manager:
+          #     cert-manager:
+          #       gnetId: 11001
+          #       revision: 1
+          #       datasource: Prometheus
+          #   jaeger:
+          #     jaeger_all_in_one:
+          #       gnetId: 12535
+          #       revision: 1
+          #       datasource: Prometheus
+          #   loki:
+          #     loki_global_metrics:
+          #       gnetId: 13407
+          #       revision: 1
+          #       datasource: Prometheus
+          #     loki_stack_monitoring:
+          #       gnetId: 14055
+          #       revision: 5
+          #       datasource:
+          #         - name: DS_PROMETHEUS
+          #           value: Prometheus
+          #         - name: DS_LOKI
+          #           value: Loki
+          #     loki_metrics:
+          #       gnetId: 17781
+          #       revision: 1
+          #       datasource: Prometheus
+          #   linkerd:
+          #     kubernetes_cluster_monitoring:
+          #       gnetId: 15479
+          #       revision: 2
+          #       datasource: Prometheus
+          #     linkerd_authority:
+          #       gnetId: 15482
+          #       revision: 3
+          #       datasource: Prometheus
+          #     linkerd_cron_job:
+          #       gnetId: 15483
+          #       revision: 3
+          #       datasource: Prometheus
+          #     linkerd_daemon_set:
+          #       gnetId: 15484
+          #       revision: 3
+          #       datasource: Prometheus
+          #     linkerd_deployment:
+          #       gnetId: 15475
+          #       revision: 7
+          #       datasource: Prometheus
+          #     linkerd_health:
+          #       gnetId: 15486
+          #       revision: 3
+          #       datasource: Prometheus
+          #     linkerd_job:
+          #       gnetId: 15487
+          #       revision: 3
+          #       datasource: Prometheus
+          #     linkerd_multicluster:
+          #       gnetId: 15488
+          #       revision: 3
+          #       datasource: Prometheus
+          #     linkerd_namespace:
+          #       gnetId: 15478
+          #       revision: 3
+          #       datasource: Prometheus
+          #     linkerd_pod:
+          #       gnetId: 15477
+          #       revision: 3
+          #       datasource: Prometheus
+          #     linkerd_replicaset:
+          #       gnetId: 15491
+          #       revision: 3
+          #       datasource: Prometheus
+          #     linkerd_replication_controller:
+          #       gnetId: 15492
+          #       revision: 4
+          #       datasource: Prometheus
+          #     linkerd_route:
+          #       gnetId: 15481
+          #       revision: 3
+          #       datasource: Prometheus
+          #     linkerd_service:
+          #       gnetId: 15480
+          #       revision: 3
+          #       datasource: Prometheus
+          #     linkerd_statefulset:
+          #       gnetId: 15493
+          #       revision: 3
+          #       datasource: Prometheus
+          #     linkerd_top_line:
+          #       gnetId: 15474
+          #       revision: 4
+          #     linkerd_prometheus_benchmark:
+          #       gnetId: 15490
+          #       revision: 2
+          #       datasource: Prometheus
+          #   nginx:
+          #     nginx_ingress_controller:
+          #       gnetId: 9614
+          #       revision: 1
+          #       datasource: Prometheus
+          #     nginx_ingress_next_gen:
+          #       gnetId: 14314
+          #       revision: 2
+          #       datasource: Prometheus
+          #   k6:
+          #     load_tests_nginx:
+          #       gnetId: 16544
+          #       revision: 1
+          #       datasource: Prometheus
+          #     k6_prometheus:
+          #       gnetId: 18030
+          #       revision: 8
+          #       datasource: Prometheus
+          #     k6_statsd:
+          #       gnetId: 13861
+          #       revision: 1
+          #       datasource: Prometheus
+          #   redis:
+          #     redis_clusters:
+          #       gnetId: 14615
+          #       revision: 1
+          #       datasource: Prometheus
+          #   cnpg:
+          #     clusters:
+          #       url: https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/grafana-dashboard.json
+          #       token: ''
         prometheus:
           ingress:
             enabled: true
