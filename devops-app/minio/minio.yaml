@@ -20,7 +20,7 @@ spec:
         nameOverride: minio
         fullnameOverride: minio
         mode: standalone
-        defaultBuckets: "argo-artifacts, sonarqube-psql"
+        defaultBuckets: "argo-artifacts, sonarqube-psql, thanos"
         auth:
           existingSecret: minio-root
           forcePassword: true

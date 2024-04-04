@@ -3,6 +3,8 @@ temp/
 tests/
 wsl2/src/
 workflow-templates/
+work/
+builder/
 .env
 devops-toys
 devops-toys.pub

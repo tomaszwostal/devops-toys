@@ -249,4 +249,4 @@ workflows_minio: workflows_minio_argo workflows_minio_workflows
 
 # Destroy the local Kubernetes cluster
 destroy:
-	kind delete cluster --name local 
+	kind delete cluster --name devops-toys
