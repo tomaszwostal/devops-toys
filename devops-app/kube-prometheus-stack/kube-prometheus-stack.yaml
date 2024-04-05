@@ -292,10 +292,10 @@ spec:
                 gnetId: 14615
                 revision: 1
                 datasource: Prometheus
-            # cnpg:
-            #   clusters:
-            #     url: https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/grafana-dashboard.json
-            #     token: ''
+            cnpg:
+              clusters:
+                url: https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/grafana-dashboard.json
+                token: ''
         prometheus:
           ingress:
             enabled: true
