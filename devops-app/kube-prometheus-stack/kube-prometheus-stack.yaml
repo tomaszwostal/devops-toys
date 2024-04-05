@@ -165,16 +165,16 @@ spec:
                   name: cnpg
                   options:
                     path: /var/lib/grafana/dashboards/cnpg
-          # dashboards:
-          #   cicd:
-          #     argo-cd:
-          #       url: https://raw.githubusercontent.com/argoproj/argo-cd/master/examples/dashboard.json
-          #       token: ''
-          #   cert-manager:
-          #     cert-manager:
-          #       gnetId: 11001
-          #       revision: 1
-          #       datasource: Prometheus
+          dashboards:
+            cicd:
+              argo-cd:
+                url: https://raw.githubusercontent.com/argoproj/argo-cd/master/examples/dashboard.json
+                token: ''
+            cert-manager:
+              cert-manager:
+                gnetId: 11001
+                revision: 1
+                datasource: Prometheus
           #   jaeger:
           #     jaeger_all_in_one:
           #       gnetId: 12535
