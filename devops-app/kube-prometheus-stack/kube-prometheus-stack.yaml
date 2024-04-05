@@ -287,11 +287,11 @@ spec:
                 gnetId: 13861
                 revision: 1
                 datasource: Prometheus
-            # redis:
-            #   redis_clusters:
-            #     gnetId: 14615
-            #     revision: 1
-            #     datasource: Prometheus
+            redis:
+              redis_clusters:
+                gnetId: 14615
+                revision: 1
+                datasource: Prometheus
             # cnpg:
             #   clusters:
             #     url: https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/grafana-dashboard.json
