@@ -197,74 +197,74 @@ spec:
                 gnetId: 17781
                 revision: 1
                 datasource: Prometheus
-            # linkerd:
-            #   kubernetes_cluster_monitoring:
-            #     gnetId: 15479
-            #     revision: 2
-            #     datasource: Prometheus
-            #   linkerd_authority:
-            #     gnetId: 15482
-            #     revision: 3
-            #     datasource: Prometheus
-            #   linkerd_cron_job:
-            #     gnetId: 15483
-            #     revision: 3
-            #     datasource: Prometheus
-            #   linkerd_daemon_set:
-            #     gnetId: 15484
-            #     revision: 3
-            #     datasource: Prometheus
-            #   linkerd_deployment:
-            #     gnetId: 15475
-            #     revision: 7
-            #     datasource: Prometheus
-            #   linkerd_health:
-            #     gnetId: 15486
-            #     revision: 3
-            #     datasource: Prometheus
-            #   linkerd_job:
-            #     gnetId: 15487
-            #     revision: 3
-            #     datasource: Prometheus
-            #   linkerd_multicluster:
-            #     gnetId: 15488
-            #     revision: 3
-            #     datasource: Prometheus
-            #   linkerd_namespace:
-            #     gnetId: 15478
-            #     revision: 3
-            #     datasource: Prometheus
-            #   linkerd_pod:
-            #     gnetId: 15477
-            #     revision: 3
-            #     datasource: Prometheus
-            #   linkerd_replicaset:
-            #     gnetId: 15491
-            #     revision: 3
-            #     datasource: Prometheus
-            #   linkerd_replication_controller:
-            #     gnetId: 15492
-            #     revision: 4
-            #     datasource: Prometheus
-            #   linkerd_route:
-            #     gnetId: 15481
-            #     revision: 3
-            #     datasource: Prometheus
-            #   linkerd_service:
-            #     gnetId: 15480
-            #     revision: 3
-            #     datasource: Prometheus
-            #   linkerd_statefulset:
-            #     gnetId: 15493
-            #     revision: 3
-            #     datasource: Prometheus
-            #   linkerd_top_line:
-            #     gnetId: 15474
-            #     revision: 4
-            #   linkerd_prometheus_benchmark:
-            #     gnetId: 15490
-            #     revision: 2
-            #     datasource: Prometheus
+            linkerd:
+              kubernetes_cluster_monitoring:
+                gnetId: 15479
+                revision: 2
+                datasource: Prometheus
+              linkerd_authority:
+                gnetId: 15482
+                revision: 3
+                datasource: Prometheus
+              linkerd_cron_job:
+                gnetId: 15483
+                revision: 3
+                datasource: Prometheus
+              linkerd_daemon_set:
+                gnetId: 15484
+                revision: 3
+                datasource: Prometheus
+              linkerd_deployment:
+                gnetId: 15475
+                revision: 7
+                datasource: Prometheus
+              linkerd_health:
+                gnetId: 15486
+                revision: 3
+                datasource: Prometheus
+              linkerd_job:
+                gnetId: 15487
+                revision: 3
+                datasource: Prometheus
+              linkerd_multicluster:
+                gnetId: 15488
+                revision: 3
+                datasource: Prometheus
+              linkerd_namespace:
+                gnetId: 15478
+                revision: 3
+                datasource: Prometheus
+              linkerd_pod:
+                gnetId: 15477
+                revision: 3
+                datasource: Prometheus
+              linkerd_replicaset:
+                gnetId: 15491
+                revision: 3
+                datasource: Prometheus
+              linkerd_replication_controller:
+                gnetId: 15492
+                revision: 4
+                datasource: Prometheus
+              linkerd_route:
+                gnetId: 15481
+                revision: 3
+                datasource: Prometheus
+              linkerd_service:
+                gnetId: 15480
+                revision: 3
+                datasource: Prometheus
+              linkerd_statefulset:
+                gnetId: 15493
+                revision: 3
+                datasource: Prometheus
+              linkerd_top_line:
+                gnetId: 15474
+                revision: 4
+              linkerd_prometheus_benchmark:
+                gnetId: 15490
+                revision: 2
+                datasource: Prometheus
             # nginx:
             #   nginx_ingress_controller:
             #     gnetId: 9614
