@@ -180,23 +180,23 @@ spec:
                 gnetId: 12535
                 revision: 1
                 datasource: Prometheus
-            # loki:
-            #   loki_global_metrics:
-            #     gnetId: 13407
-            #     revision: 1
-            #     datasource: Prometheus
-            #   loki_stack_monitoring:
-            #     gnetId: 14055
-            #     revision: 5
-            #     datasource:
-            #       - name: DS_PROMETHEUS
-            #         value: Prometheus
-            #       - name: DS_LOKI
-            #         value: Loki
-            #   loki_metrics:
-            #     gnetId: 17781
-            #     revision: 1
-            #     datasource: Prometheus
+            loki:
+              loki_global_metrics:
+                gnetId: 13407
+                revision: 1
+                datasource: Prometheus
+              loki_stack_monitoring:
+                gnetId: 14055
+                revision: 5
+                datasource:
+                  - name: DS_PROMETHEUS
+                    value: Prometheus
+                  - name: DS_LOKI
+                    value: Loki
+              loki_metrics:
+                gnetId: 17781
+                revision: 1
+                datasource: Prometheus
             # linkerd:
             #   kubernetes_cluster_monitoring:
             #     gnetId: 15479
