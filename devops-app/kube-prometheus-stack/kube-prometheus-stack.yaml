@@ -274,19 +274,19 @@ spec:
                 gnetId: 14314
                 revision: 2
                 datasource: Prometheus
-            # k6:
-            #   load_tests_nginx:
-            #     gnetId: 16544
-            #     revision: 1
-            #     datasource: Prometheus
-            #   k6_prometheus:
-            #     gnetId: 18030
-            #     revision: 8
-            #     datasource: Prometheus
-            #   k6_statsd:
-            #     gnetId: 13861
-            #     revision: 1
-            #     datasource: Prometheus
+            k6:
+              load_tests_nginx:
+                gnetId: 16544
+                revision: 1
+                datasource: Prometheus
+              k6_prometheus:
+                gnetId: 18030
+                revision: 8
+                datasource: Prometheus
+              k6_statsd:
+                gnetId: 13861
+                revision: 1
+                datasource: Prometheus
             # redis:
             #   redis_clusters:
             #     gnetId: 14615
