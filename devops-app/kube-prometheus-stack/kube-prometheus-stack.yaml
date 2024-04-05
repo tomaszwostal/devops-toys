@@ -175,11 +175,11 @@ spec:
                 gnetId: 11001
                 revision: 1
                 datasource: Prometheus
-            # jaeger:
-            #   jaeger_all_in_one:
-            #     gnetId: 12535
-            #     revision: 1
-            #     datasource: Prometheus
+            jaeger:
+              jaeger_all_in_one:
+                gnetId: 12535
+                revision: 1
+                datasource: Prometheus
             # loki:
             #   loki_global_metrics:
             #     gnetId: 13407
