@@ -12,7 +12,7 @@ resources:
   - grafana-loki
   - grafana-promtail
   - ingress-nginx
-  #  - jaeger
+  - jaeger
   - sealed-secrets
   - kube-prometheus-stack
   - linkerd
@@ -20,6 +20,5 @@ resources:
   - linkerd-viz
   - metallb
   - minio
-  # - sonarqube
+  - sonarqube
   - trust-manager
-  - redis
