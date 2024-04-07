@@ -22,4 +22,4 @@ resources:
   - minio
   - sonarqube
   - trust-manager
-  #  - redis
+  - redis
