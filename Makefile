@@ -248,7 +248,8 @@ workflows_minio_workflows:
 
 workflows_minio: workflows_minio_argo workflows_minio_workflows
 
-all: cluster_local initial_setup add_repo ca minio bootstrap argocd workflows_minio
+
+all: cluster_local initial_setup add_repo ca minio sonarqube bootstrap argocd workflows_minio
 # Destroy the local Kubernetes cluster
 destroy:
 	kind delete cluster --name devops-toys
