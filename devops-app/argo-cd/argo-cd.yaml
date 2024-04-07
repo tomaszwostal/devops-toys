@@ -36,6 +36,8 @@ spec:
               release: monitoring
             selector:
               release: monitoring
+        externalRedis:
+          host: "redis-master-0.redis.svc.cluster.local"
         redis:
           enabled: false
           exporter:
