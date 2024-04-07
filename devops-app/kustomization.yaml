@@ -15,9 +15,9 @@ resources:
   #  - jaeger
   - sealed-secrets
   - kube-prometheus-stack
-  # - linkerd
-  # - linkerd-jaeger
-  # - linkerd-viz
+  - linkerd
+  - linkerd-jaeger
+  - linkerd-viz
   - metallb
   - minio
   # - sonarqube
