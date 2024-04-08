@@ -90,7 +90,7 @@ spec:
             - name: METRICS_STORAGE_TYPE
               value: prometheus
             - name: PROMETHEUS_SERVER_URL
-              value: monitoring-prometheus.monitoring.svc:9090
+        value: http://monitoring-prometheus.monitoring.svc.cluster.local:9090
             - name: PROMETHEUS_QUERY_SUPPORT_SPANMETRICS_CONNECTOR
               value: "true"
             - name: PROMETHEUS_QUERY_NORMALIZE_CALLS
