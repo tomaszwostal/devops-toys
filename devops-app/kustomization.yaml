@@ -24,4 +24,4 @@ resources:
   - trust-manager
   - redis
   - opentelemetry
-  - otelemetry-demo
+  - otel-demo
