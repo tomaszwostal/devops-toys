@@ -91,6 +91,12 @@ spec:
               value: prometheus
             - name: PROMETHEUS_SERVER_URL
               value: monitoring-prometheus.monitoring.svc:9090
+            - name: PROMETHEUS_QUERY_SUPPORT_SPANMETRICS_CONNECTOR
+              value: "true"
+            - name: PROMETHEUS_QUERY_NORMALIZE_CALLS
+              value: "true"
+            - name: PROMETHEUS_QUERY_NORMALIZE_DURATION
+              value: "true"
           ingress:
             enabled: true
             ingressClassName: nginx

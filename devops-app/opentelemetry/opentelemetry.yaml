@@ -8,7 +8,7 @@ metadata:
 spec:
   project: core
   destination:
-    namespace: opentelemetry-operator
+    namespace: opentelemetry
     server: https://kubernetes.default.svc
   source:
     repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
@@ -16,10 +16,6 @@ spec:
     targetRevision: 0.53.2
     helm:
       releaseName: opentelemetry-operator
-      # values: |-
-      #   usePassword: false
-      #   persistence:
-      #     enabled: false
   syncPolicy:
     automated:
       selfHeal: true

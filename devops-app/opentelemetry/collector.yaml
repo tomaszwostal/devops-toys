@@ -2,7 +2,7 @@ apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
   name: otel
-  namespace: opentelemetry-operator
+  namespace: opentelemetry
 spec:
   image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.94.0
   mode: deployment
@@ -21,7 +21,20 @@ spec:
             endpoint: 0.0.0.0:4318
     
     processors:
-      batch:
+      tail_sampling:
+        decision_wait: 10s # time to wait before making a sampling decision
+        num_traces: 100 # number of traces to be kept in memory
+        expected_new_traces_per_sec: 10 # expected rate of new traces per second
+        policies:
+          - name: keep-errors
+            type: status_code
+            status_code: {status_codes: [ERROR]}
+          - name: keep-slow-traces
+            type: latency
+            latency: {threshold_ms: 500}
+          - name: randomized-policy
+            type: probabilistic
+            probabilistic: {sampling_percentage: 10}
 
     exporters:
       otlp/traces:
@@ -37,14 +50,20 @@ spec:
       debug:
         verbosity: detailed
 
+    connectors:
+      spanmetrics:
+
     service:
       pipelines:
         traces:
           receivers: [otlp]
-          processors: [batch]
+          processors: [tail_sampling]
           exporters: [otlp/traces]
-        metrics:
+        traces/spanmetrics:
           receivers: [otlp]
+          exporters: [spanmetrics]
+        metrics:
+          receivers: [otlp,spanmetrics]
           exporters: [otlphttp/metrics]
         logs:
           receivers: [otlp]
