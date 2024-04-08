@@ -313,6 +313,10 @@ spec:
           enabled: true
           agentMode: false
           prometheusSpec:
+            enableFeatures:
+              - remote-write-receiver
+              - otlp-write-receiver
+              - exemplar-storage
             podMonitorSelectorNilUsesHelmValues: false
             ruleSelectorNilUsesHelmValues: false
             serviceMonitorSelectorNilUsesHelmValues: false
