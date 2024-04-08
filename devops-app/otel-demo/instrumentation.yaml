@@ -12,8 +12,7 @@ spec:
     - b3
   sampler:
     type: parentbased_traceidratio
-    # argument: "1" - this was the default value
-    argument: "0.5"
+    argument: "1"
   resource:
     addK8sUIDAttributes: true
   python:
