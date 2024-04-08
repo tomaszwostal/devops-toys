@@ -2,7 +2,7 @@ apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
   name: otel
-  namespace: opentelemetry
+  namespace: opentelemetry-operator
 spec:
   image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.94.0
   mode: deployment
@@ -43,7 +43,7 @@ spec:
           insecure: true
       
       otlphttp/metrics:
-        endpoint: http://monitoring-prometheus.monitoring.svc.cluster.local:9090/api/v1/otlp/
+        endpoint: http://monitoring-prometheus.monitoring.svc.cluster.local:8080/api/v1/otlp/
         tls:
           insecure: true
       
