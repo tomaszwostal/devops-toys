@@ -45,6 +45,10 @@ spec:
               release: monitoring
 
         collector:
+          serviceMonitor:
+            enabled: true
+            additionalLabels:
+              release: monitoring
           service:
             grpc:
               port: 14250
@@ -75,11 +79,6 @@ spec:
               - secretName: 'tls-jaeger-collector.local.devops'
                 hosts:
                   - 'jaeger-collector.local.devops'
-          resources:
-          serviceMonitor:
-            enabled: true
-            additionalLabels:
-              release: monitoring
           networkPolicy:
             enabled: false
 
