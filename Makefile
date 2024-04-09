@@ -50,6 +50,7 @@ initial_setup:
 	kubectl create namespace monitoring
 	kubectl create namespace ingress-nginx
 	kubectl create namespace workflows
+	kubectl create namespace argo
 	kustomize build ./devops-app/kube-prometheus-stack | kubectl apply -f -
 	kustomize build ./devops-app/ingress-nginx | kubectl apply -f -
 	kustomize build ./devops-app/sealed-secrets | kubectl apply -f -
