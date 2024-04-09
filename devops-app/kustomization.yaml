@@ -23,5 +23,5 @@ resources:
   - sonarqube
   - trust-manager
   - redis
-  - opentelemetry
-  - otel-demo
+  # - opentelemetry
+  # - otel-demo
