@@ -12,7 +12,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://open-feature.github.io/open-feature-operator/
-    chart: openfeature-operator
+    chart: open-feature-operator
     targetRevision: v0.5.4
     helm:
       releaseName: openfeature-operator
