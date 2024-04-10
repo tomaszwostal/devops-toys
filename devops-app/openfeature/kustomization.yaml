@@ -5,5 +5,5 @@ resources:
   - openfeature.yaml
   - featureflag-frontend.yaml
   - featureflag-source.yaml
-  - featureflag-fronted.yaml
+  #  - featureflag-fronted.yaml
   - demo-app.yaml
