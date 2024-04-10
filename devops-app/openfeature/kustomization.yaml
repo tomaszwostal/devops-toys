@@ -3,7 +3,3 @@ kind: Kustomization
 
 resources:
   - openfeature.yaml
-  - featureflag-frontend.yaml
-  - featureflag-source.yaml
-  #  - featureflag-fronted.yaml
-  - demo-app.yaml
