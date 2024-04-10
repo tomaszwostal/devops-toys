@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: openfeature-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: core
+  destination:
+    namespace: openfeature
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://open-feature.github.io/open-feature-operator/
+    chart: openfeature-operator
+    targetRevision: v0.5.4
+    helm:
+      releaseName: openfeature-operator
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=false
