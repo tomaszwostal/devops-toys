@@ -1,0 +1,30 @@
+kind: FeatureFlag
+metadata:
+  name: app-flags
+  labels:
+    app: open-feature-demo
+spec:
+  flagSpec:
+    flags:
+      fib-algo:
+        variants:
+          recursive: recursive
+          memo: memo
+          loop: loop
+          binet: binet
+        defaultVariant: recursive
+        state: ENABLED
+        targeting:
+          if:
+            - in:
+              - "@faas.com"
+              - var:
+                - email
+            - binet
+            - null
+      use-remote-fib-service:
+        state: ENABLED
+        variants:
+          'on': true
+          'off': false
+        defaultVariant: 'off'
