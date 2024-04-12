@@ -25,5 +25,5 @@ resources:
   - redis
   - opentelemetry
   - openfeature
-  # - openfeature-demo
-  # - otel-demo
+  - openfeature-demo
+  - otel-demo
