@@ -1,0 +1,22 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: open-feature-operator-flagd-kubernetes-sync-2
+  labels:
+    argocd.argoproj.io/instance: openfeature-operator
+  annotations:
+subjects:
+  - kind: ServiceAccount
+    name: open-feature-operator-controller-manager
+    namespace: openfeature
+  - kind: ServiceAccount
+    name: open-feature-operator-flagd-proxy
+    namespace: openfeature
+  - kind: ServiceAccount
+    name: default
+    namespace: open-feature-demo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: open-feature-operator-flagd-kubernetes-sync
+
