@@ -19,6 +19,8 @@ spec:
       values: |-
         nameOverride: influxdb
         fullnameOverride: influxdb
+        auth:
+          enabled: false
         ingress:
           enabled: true
           ingressClassName: nginx
