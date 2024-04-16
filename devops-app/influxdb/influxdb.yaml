@@ -24,7 +24,7 @@ spec:
           ingressClassName: nginx
           tls: true
           pathType: ImplementationSpecific
-          hostname: influxdb.devops.local
+          hostname: influxdb.local.devops
           path: /
           annotations:
             cert-manager.io/cluster-issuer: local.devops
