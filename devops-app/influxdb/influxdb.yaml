@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: influxdb
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: core
+  destination:
+    namespace: influxdb
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: influxdb
+    targetRevision: 6.0.6
+    helm:
+      releaseName: influxdb
+      values: |-
+        nameOverride: influxdb
+        fullnameOverride: influxdb
+        ingress:
+          enabled: true
+          ingressClassName: nginx
+          tls: true
+          pathType: ImplementationSpecific
+          hostname: influxdb.devops.local
+          path: /
+          annotations:
+            cert-manager.io/cluster-issuer: local.devops
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=false
+

@@ -27,3 +27,4 @@ resources:
   - openfeature
   - openfeature-demo
   - otel-demo
+  - influxdb
