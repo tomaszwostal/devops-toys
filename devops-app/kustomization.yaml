@@ -28,3 +28,4 @@ resources:
   - openfeature-demo
   - otel-demo
   - influxdb
+  - external-secrets
