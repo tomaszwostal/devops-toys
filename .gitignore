@@ -5,8 +5,8 @@ wsl2/src/
 workflow-templates/
 work/
 builder/
-devops-app/external-secrets/secret-store.yaml
-devops-app/external-secrets/secret-acr-sp.yaml
+# devops-app/external-secrets/secret-store.yaml
+# devops-app/external-secrets/secret-acr-sp.yaml
 .env
 devops-toys
 devops-toys.pub
