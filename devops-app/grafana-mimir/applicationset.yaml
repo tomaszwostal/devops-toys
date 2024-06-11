@@ -1,0 +1,88 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: grafana-mimir
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-grafana-mimir'
+    spec:
+      project: monitoring
+      destination:
+        namespace: mimir
+        server: '{{url}}'
+      source:
+        repoURL: https://grafana.github.io/helm-charts
+        chart: mimir-distributed
+        targetRevision: 5.3.0
+        helm:
+          releaseName: grafana-mimir
+          values: |-
+            nameOverride: "grafana-mimir"
+            fullnameOverride: "grafana-mimir"
+            global:
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+            metaMonitoring:
+              dashboards:
+                enabled: true
+              serviceMonitor:
+                enabled: true
+                labels:
+                  release: prometheus
+              prometheusRule:
+                enabled: true
+                labels:
+                  release: prometheus
+            minio:
+              enabled: false
+            nginx:
+              enabled: false
+            ingress:
+              enabled: true
+              ingressClassName: nginx
+              annotations: 
+                cert-manager.io/cluster-issuer: devops-local
+              hosts:
+                - mimir.devops.local
+              tls:
+                - secretName: tls-mimir.devops.local
+                  hosts:
+                    - mimir.devops.local
+            mimir:
+              structuredConfig:
+                limits:
+                  max_global_series_per_user: 2000000
+                common:
+                  storage:
+                    backend: s3
+                    s3:
+                      endpoint: minio.minio.svc.cluster.local:9000
+                      secret_access_key: minioadmin
+                      access_key_id: minioadmin
+                      insecure: true
+                blocks_storage:
+                  s3:
+                    bucket_name: mimir-blocks
+                alertmanager_storage:
+                  s3:
+                    bucket_name: mimir-alertmanager
+                ruler_storage:
+                  s3:
+                    bucket_name: mimir-ruler
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+

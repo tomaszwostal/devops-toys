@@ -1,0 +1,60 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: grafana-promtail
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-grafana-promtail'
+    spec:
+      project: monitoring
+      destination:
+        namespace: promtail
+        server: '{{url}}'
+      source:
+        repoURL: https://grafana.github.io/helm-charts
+        chart: promtail
+        targetRevision: 6.15.5
+        helm:
+          releaseName: grafana-promtail
+          values: |-
+            nameOverride: "grafana-promtail"
+            fullnameOverride: "grafana-promtail"
+            extraArgs:
+              - '-config.expand-env=true'
+              - '-client.external-labels=cluster={{cluster}}'
+            extraEnv:
+              - name: LOKI_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: promtail-credentials
+                    key: username
+              - name: LOKI_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: promtail-credentials
+                    key: password
+            serviceMonitor:
+              enabled: true
+            config:
+              clients:
+                - url: http://grafana-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
+                  tenant_id: devops-toys
+                  basic_auth:
+                    password: "${LOKI_PASSWORD}"
+                    username: "${LOKI_USERNAME}"
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+
