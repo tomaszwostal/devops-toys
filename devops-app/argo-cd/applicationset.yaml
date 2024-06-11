@@ -55,7 +55,7 @@ spec:
               ingress:
                 enabled: true
                 annotations:
-                  cert-manager.io/cluster-issuer: local.devops
+                  cert-manager.io/cluster-issuer: devops-local
                   nginx.ingress.kubernetes.io/ssl-passthrough: "true"
                   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
                 ingressClassName: nginx
