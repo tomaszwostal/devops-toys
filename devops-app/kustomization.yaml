@@ -3,29 +3,29 @@ kind: Kustomization
 
 resources:
   - argo-cd
-  - argo-events
-  - argo-workflows
-  - bootstrap
-  - cert-manager
-  - cnpg
-  - devops-app
-  - grafana-loki
-  - grafana-promtail
-  - ingress-nginx
-  - jaeger
-  - sealed-secrets
-  - kube-prometheus-stack
-  - linkerd
-  - linkerd-jaeger
-  - linkerd-viz
-  - metallb
-  - minio
-  - sonarqube
-  - trust-manager
-  - redis
-  - opentelemetry
-  - openfeature
-  - openfeature-demo
-  - otel-demo
-  - influxdb
-  - external-secrets
+  # - argo-events
+  # - argo-workflows
+  # - bootstrap
+  # - cert-manager
+  # - cnpg
+  # - devops-app
+  # - grafana-loki
+  # - grafana-promtail
+  # - ingress-nginx
+  # - jaeger
+  # - sealed-secrets
+  # - kube-prometheus-stack
+  # - linkerd
+  # - linkerd-jaeger
+  # - linkerd-viz
+  # - metallb
+  # - minio
+  # - sonarqube
+  # - trust-manager
+  # - redis
+  # - opentelemetry
+  # - openfeature
+  # - openfeature-demo
+  # - otel-demo
+  # - influxdb
+  # - external-secrets

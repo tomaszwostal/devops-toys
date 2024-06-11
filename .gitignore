@@ -1,10 +1,12 @@
 charts/**/charts
 temp/
+backup/
 tests/
 wsl2/src/
 workflow-templates/
 work/
 builder/
+scripts/
 # devops-app/external-secrets/secret-store.yaml
 # devops-app/external-secrets/secret-acr-sp.yaml
 .env
@@ -18,3 +20,10 @@ kuttl-minimal.yaml
 ca.crt
 ca.key
 post
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

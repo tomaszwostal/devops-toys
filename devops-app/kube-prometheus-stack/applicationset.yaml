@@ -1,0 +1,173 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-kube-prometheus-stack'
+    spec:
+      project: monitoring
+      destination:
+        namespace: monitoring
+        server: '{{url}}'
+      source:
+        repoURL: https://prometheus-community.github.io/helm-charts
+        chart: kube-prometheus-stack
+        targetRevision: 57.2.0
+        helm:
+          releaseName: prometheus
+          values: |-
+            nameOverride: prometheus
+            fullnameOverride: prometheus
+            alertmanager:
+              enabled: false
+            grafana:
+              enabled: false
+            prometheusOperator:
+              enabled: true
+              fullnameOverride: prometheus
+            prometheus:
+              enabled: true
+              agentMode: false
+              prometheusSpec:
+                enableFeatures:
+                  - remote-write-receiver
+                  - otlp-write-receiver
+                  - exemplar-storage
+                podMonitorSelectorNilUsesHelmValues: false
+                ruleSelectorNilUsesHelmValues: false
+                serviceMonitorSelectorNilUsesHelmValues: false
+                probeSelectorNilUsesHelmValues: false
+                remoteWrite:
+                  - url: http://grafana-mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push
+                    headers:
+                      X-Scope-OrgID: devopstoys
+                # podMonitorSelector:
+                #   matchLabels:
+                #     release: monitoring
+                # serviceMonitorSelector:
+                #   matchLabels:
+                #     release: monitoring
+                
+                additionalScrapeConfigs:
+                  - job_name: 'kubernetes-nodes-cadvisor'
+                    scheme: https
+                    tls_config:
+                      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                      insecure_skip_verify: true
+                    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+                    kubernetes_sd_configs:
+                    - role: node
+                    relabel_configs:
+                    - action: labelmap
+                      regex: __meta_kubernetes_node_label_(.+)
+                    - target_label: __address__
+                      replacement: kubernetes.default.svc:443
+                    - source_labels: [__meta_kubernetes_node_name]
+                      regex: (.+)
+                      target_label: __metrics_path__
+                      replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+                    metric_relabel_configs:
+                    - source_labels: [__name__]
+                      regex: '(container|machine)_(cpu|memory|network|fs)_(.+)'
+                      action: keep
+                    - source_labels: [__name__]
+                      regex: 'container_memory_failures_total' # unneeded large metric
+                      action: drop
+
+                  - job_name: 'linkerd-controller'
+                    kubernetes_sd_configs:
+                    - role: pod
+                      namespaces:
+                        names:
+                        - linkerd
+                        - linkerd-viz
+                    relabel_configs:
+                    - source_labels:
+                      - __meta_kubernetes_pod_container_port_name
+                      action: keep
+                      regex: admin-http
+                    - source_labels: [__meta_kubernetes_pod_container_name]
+                      action: replace
+                      target_label: component
+
+                  - job_name: 'linkerd-service-mirror'
+                    kubernetes_sd_configs:
+                    - role: pod
+                    relabel_configs:
+                    - source_labels:
+                      - __meta_kubernetes_pod_label_component
+                      - __meta_kubernetes_pod_container_port_name
+                      action: keep
+                      regex: linkerd-service-mirror;admin-http$
+                    - source_labels: [__meta_kubernetes_pod_container_name]
+                      action: replace
+                      target_label: component
+
+                  - job_name: 'linkerd-proxy'
+                    kubernetes_sd_configs:
+                    - role: pod
+                    relabel_configs:
+                    - source_labels:
+                      - __meta_kubernetes_pod_container_name
+                      - __meta_kubernetes_pod_container_port_name
+                      - __meta_kubernetes_pod_label_linkerd_io_control_plane_ns
+                      action: keep
+                      regex: linkerd-proxy;linkerd-admin;linkerd$
+                    - source_labels: [__meta_kubernetes_namespace]
+                      action: replace
+                      target_label: namespace
+                    - source_labels: [__meta_kubernetes_pod_name]
+                      action: replace
+                      target_label: pod
+                    # special case k8s' "job" label, to not interfere with prometheus' "job"
+                    # label
+                    # __meta_kubernetes_pod_label_linkerd_io_proxy_job=foo =>
+                    # k8s_job=foo
+                    - source_labels: [__meta_kubernetes_pod_label_linkerd_io_proxy_job]
+                      action: replace
+                      target_label: k8s_job
+                    # drop __meta_kubernetes_pod_label_linkerd_io_proxy_job
+                    - action: labeldrop
+                      regex: __meta_kubernetes_pod_label_linkerd_io_proxy_job
+                    # __meta_kubernetes_pod_label_linkerd_io_proxy_deployment=foo =>
+                    # deployment=foo
+                    - action: labelmap
+                      regex: __meta_kubernetes_pod_label_linkerd_io_proxy_(.+)
+                    # drop all labels that we just made copies of in the previous labelmap
+                    - action: labeldrop
+                      regex: __meta_kubernetes_pod_label_linkerd_io_proxy_(.+)
+                    # __meta_kubernetes_pod_label_linkerd_io_foo=bar =>
+                    # foo=bar
+                    - action: labelmap
+                      regex: __meta_kubernetes_pod_label_linkerd_io_(.+)
+                    # Copy all pod labels to tmp labels
+                    - action: labelmap
+                      regex: __meta_kubernetes_pod_label_(.+)
+                      replacement: __tmp_pod_label_$1
+                    # Take `linkerd_io_` prefixed labels and copy them without the prefix
+                    - action: labelmap
+                      regex: __tmp_pod_label_linkerd_io_(.+)
+                      replacement:  __tmp_pod_label_$1
+                    # Drop the `linkerd_io_` originals
+                    - action: labeldrop
+                      regex: __tmp_pod_label_linkerd_io_(.+)
+                    # Copy tmp labels into real labels
+                    - action: labelmap
+                      regex: __tmp_pod_label_(.+)     
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+

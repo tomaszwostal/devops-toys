@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kube-prometheus-stack-crds
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-kube-prometheus-stack-crds'
+    spec:
+      project: monitoring
+      destination:
+        namespace: monitoring
+        server: '{{url}}'
+      source:
+        repoURL: https://prometheus-community.github.io/helm-charts
+        chart: prometheus-operator-crds
+        targetRevision: 7.0.0
+        helm:
+          releaseName: kube-prometheus-stack-crds
+          values: |-
+            nameOverride: kube-prometheus-stack-crds
+            fullnameOverride: kube-prometheus-stack-crds
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+
