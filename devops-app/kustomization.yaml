@@ -6,15 +6,15 @@ resources:
   # - argo-events
   # - argo-workflows
   # - bootstrap
-  # - cert-manager
+  - cert-manager
   # - cnpg
-  # - devops-app
+  - devops-app
   # - grafana-loki
   # - grafana-promtail
-  # - ingress-nginx
+  - ingress-nginx
   # - jaeger
-  # - sealed-secrets
-  # - kube-prometheus-stack
+  - sealed-secrets
+  - kube-prometheus-stack
   # - linkerd
   # - linkerd-jaeger
   # - linkerd-viz

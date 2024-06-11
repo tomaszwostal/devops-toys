@@ -27,7 +27,7 @@ install_brew:
 	/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Create a local Kubernetes cluster
-cluster_local:
+cluster:
 	@echo "Creating local Kubernetes cluster"
 	kind create cluster --config ./kind/cluster-local.yaml
 
@@ -39,27 +39,180 @@ domain_name:
 	git push
 
 # Configure the local Kubernetes cluster
+namespaces:
+	kubectl create namespace minio
+	kubectl create namespace metallb-system
+	kubectl create namespace ingress-nginx
+	kubectl create namespace monitoring
+	kubectl create namespace cert-manager
 initial_setup:
+	# Install ArgoCD
 	helm repo add argo https://argoproj.github.io/argo-helm
 	helm upgrade --install argocd argo/argo-cd -n argocd --create-namespace --wait
-	kustomize build ./devops-app/devops-app | kubectl apply -f -
-	kubectl create namespace cert-manager
-	kubectl create namespace minio
-	kubectl create namespace sonarqube
-	kubectl create namespace metallb-system
-	kubectl create namespace monitoring
-	kubectl create namespace ingress-nginx
-	kubectl create namespace workflows
-	kubectl create namespace argo
+	# Create basic projects in ArgoCD
+	kubectl apply -f devops-app/argocd-project-cicd.yaml
+	kubectl apply -f devops-app/argocd-project-core.yaml
+	kubectl apply -f devops-app/argocd-project-monitoring.yaml
+	kubectl apply -f devops-app/argocd-project-observability.yaml
+	# # Install Prometheus
 	kustomize build ./devops-app/kube-prometheus-stack | kubectl apply -f -
-	kustomize build ./devops-app/ingress-nginx | kubectl apply -f -
 	kustomize build ./devops-app/sealed-secrets | kubectl apply -f -
+	# # Install cert-manager
+	kustomize build ./devops-app/cert-manager | kubectl apply -f -
+	# # Install Opentelemetry Operator
+	# 
+	# kubectl create namespace opentelemetry
+	# kustomize build ./devops-app/opentelemetry-operator | kubectl apply -f -
+	# # Install Grafana
+	# kubectl create namespace grafana
+	# kustomize build ./devops-app/grafana | kubectl apply -f -
+	
+	# kustomize build ./devops-app/devops-app | kubectl apply -f -
+	
+	# kubectl create namespace sonarqube
+	# kubectl create namespace argo
+	kustomize build ./devops-app/ingress-nginx | kubectl apply -f -
 	kustomize build ./devops-app/cert-manager | kubectl apply -f -
 	kustomize build ./devops-app/metallb | kubectl apply -f -
-	kustomize build ./devops-app/trust-manager | kubectl apply -f -
-	kustomize build ./devops-app/cnpg | kubectl apply -f -
-	# TODO: Find a better solution - wait for cert-manager
-	sleep 180
+	# kustomize build ./devops-app/trust-manager | kubectl apply -f -
+	# kustomize build ./devops-app/cnpg | kubectl apply -f -
+	# # TODO: Find a better solution - wait for cert-manager
+	# sleep 180
+
+sealed_secrets:
+	kustomize build ./devops-app/sealed-secrets | kubectl apply -f -
+
+metallb:
+	kustomize build ./devops-app/metallb | kubectl apply -f -
+
+opentelemetry:
+	kustomize build ./devops-app/opentelemetry-operator | kubectl apply -f -
+
+cert_manager:
+	#kubectl create namespace cert-manager
+	# Generata CA key
+	openssl genrsa -out ca.key 4096
+	# Generate CA cert
+	openssl req -new -x509 -sha256 -days 3650 \
+		-key ca.key \
+		-out ca.crt \
+		-subj '/CN=$(CN)/emailAddress=$(GITHUB_EMAIL)/C=$(C)/ST=$(ST)/L=$(L)/O=$(O)/OU=$(OU)'
+	# Create secret with CA
+	kubectl --namespace cert-manager \
+		create secret \
+		generic devops-local-ca \
+		--from-file=tls.key=ca.key \
+		--from-file=tls.crt=ca.crt \
+		--output json \
+		--dry-run=client | \
+		kubeseal --format yaml \
+		--controller-name=sealed-secrets \
+		--controller-namespace=sealed-secrets | \
+		tee devops-app/cert-manager/ca-secret.yaml
+			kubectl apply -f ./devops-app/cert-manager/ca-secret.yaml
+			git add ./devops-app/cert-manager/ca-secret.yaml
+			git commit -m "Add CA cert secret"
+			git push
+	# Make ca-cert trusted
+	# For Arch Linux
+	# sudo cp ca.crt /etc/ca-certificates/trust-source/anchors
+	# sudo update-ca-trust
+	# For Debian/Ubuntu
+	#sudo cp ca.crt /usr/local/share/ca-certificates
+	#sudo update-ca-certificates
+	# For MacOS
+	sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ca.crt
+	kustomize build ./devops-app/cert-manager | kubectl apply -f -
+
+ingress_nginx:
+	kustomize build ./devops-app/ingress-nginx | kubectl apply -f -
+
+minio:
+	# Create minio users
+	@./scripts/minio_users.sh "${MINIO_USERNAME}" "${MINIO_PASSWORD}"
+	kubectl apply -f ./devops-app/minio/minio-users-secret.yaml
+	git add ./devops-app/minio/minio-users-secret.yaml
+	git commit -m "Add MinIO users secret"
+	git push
+	# Create root minio root user
+	kubectl --namespace minio \
+		create secret \
+		generic minio-root \
+		--from-literal=root-user=$(MINIO_ROOT_USER) \
+		--from-literal=root-password=$(MINIO_ROOT_PASSWORD) \
+		--output json \
+		--dry-run=client | \
+		kubeseal --format yaml \
+		--controller-name=sealed-secrets \
+		--controller-namespace=sealed-secrets | \
+		tee ./devops-app/minio/minio-root-secret.yaml
+	kubectl apply -f ./devops-app/minio/minio-root-secret.yaml
+	git add ./devops-app/minio/minio-root-secret.yaml
+	git commit -m "Add MinIO root credentials"
+	git push
+	kustomize build ./devops-app/minio | kubectl apply -f -
+
+grafana_mimir:
+	#kubectl create namespace mimir
+	kubectl --namespace mimir \
+		create secret \
+		generic minio-creds \
+		--from-literal=accesskey=${MINIO_ACCESS_KEY} \
+		--from-literal=secretkey=${MINIO_SECRET_KEY} \
+		--output json \
+		--dry-run=client | \
+		kubeseal --format yaml \
+		--controller-name=sealed-secrets \
+		--controller-namespace=sealed-secrets | \
+		tee ./devops-app/grafana-mimir/storage-credentials.yaml
+	kubectl apply -f ./devops-app/grafana-mimir/storage-credentials.yaml
+	git add ./devops-app/grafana-mimir/storage-credentials.yaml
+	git commit -m "Add storage credentials"
+	git push
+	kustomize build ./devops-app/grafana-mimir | kubectl apply -f -
+
+kube-prometheus-stack:
+	kustomize build ./devops-app/kube-prometheus-stack | kubectl apply -f -
+
+grafana:
+	kubectl --namespace grafana \
+		create secret \
+		generic grafana-credentials \
+		--from-literal=LOKI_TENANT_1_ID=${LOKI_TENANT_1_ID} \
+		--from-literal=LOKI_TENANT_2_ID=${LOKI_TENANT_2_ID} \
+		--output json \
+		--dry-run=client | \
+		kubeseal --format yaml \
+		--controller-name=sealed-secrets \
+		--controller-namespace=sealed-secrets | \
+		tee ./devops-app/grafana/grafana-credentials.yaml
+	kubectl apply -f ./devops-app/grafana/grafana-credentials.yaml
+	kustomize build ./devops-app/grafana | kubectl apply -f -
+
+grafana_loki:
+	htpasswd -b -c .htpasswd ${LOKI_USER} ${LOKI_PASSWORD}
+	htpasswd -b .htpasswd ${LOKI_USER_LOCAL} ${LOKI_PASSWORD_LOCAL}
+	kubectl -n loki create secret generic loki-gateway-auth --from-file=.htpasswd --dry-run=client -o yaml > htaccess-loki.yaml
+	kubeseal --format yaml --controller-name=sealed-secrets --controller-namespace=sealed-secrets < htaccess-loki.yaml > ./devops-app/grafana-loki/htaccess-loki.yaml
+	kustomize build ./devops-app/grafana-loki | kubectl apply -f -
+
+grafana_promtail:
+	kubectl --namespace promtail \
+		create secret \
+		generic promtail-credentials \
+		--from-literal=username=${LOKI_USER} \
+		--from-literal=password=${LOKI_PASSWORD} \
+		--output json \
+		--dry-run=client | \
+		kubeseal --format yaml \
+		--controller-name=sealed-secrets \
+		--controller-namespace=sealed-secrets | \
+		tee ./devops-app/grafana-promtail/promtail-credentials.yaml
+	kubectl apply -f ./devops-app/grafana-promtail/promtail-credentials.yaml
+	git add ./devops-app/grafana-promtail/promtail-credentials.yaml
+	git commit -m "Add promtail credentials"
+	git push
+	kustomize build ./devops-app/grafana-promtail | kubectl apply -f -
 
 # Configure the ArgoCD repository
 add_repo:
@@ -80,85 +233,6 @@ add_repo:
 	--local -oyaml > ./devops-app/bootstrap/manifests/repo-devops-toys.yaml
 	git add ./devops-app/bootstrap/manifests/repo-devops-toys.yaml
 	git commit -m "Add devops-toys repo to Argocd"
-	git push
-
-ca: ca_key ca_cert ca_cert_secret ca_trusted
-
-# Generate a CA key
-ca_key:
-	openssl genrsa -out ca.key 4096
-
-# Generate a CA certificate
-ca_cert:
-	openssl req -new -x509 -sha256 -days 3650 \
-  	-key ca.key \
-  	-out ca.crt \
-  	-subj '/CN=$(CN)/emailAddress=$(GITHUB_EMAIL)/C=$(C)/ST=$(ST)/L=$(L)/O=$(O)/OU=$(OU)'
-
-# Create a CA certificate secret
-ca_cert_secret:
-	kubectl --namespace cert-manager \
-  create secret \
-  generic local.devops-ca \
-  --from-file=tls.key=ca.key \
-  --from-file=tls.crt=ca.crt \
-  --output json \
-  --dry-run=client | \
-  kubeseal --format yaml \
-  --controller-name=sealed-secrets \
-  --controller-namespace=sealed-secrets | \
-  tee devops-app/bootstrap/manifests/ca-secret.yaml
-	kubectl apply -f ./devops-app/bootstrap/manifests/ca-secret.yaml
-	git add ./devops-app/bootstrap/manifests/ca-secret.yaml
-	git commit -m "Add CA cert secret"
-	git push
-
-# Add the CA certificate to the trusted certificates
-ca_trusted:
-	# For Arch Linux
-	# sudo cp ca.crt /etc/ca-certificates/trust-source/anchors
-	# sudo update-ca-trust
-	# For Debian/Ubuntu
-	#sudo cp ca.crt /usr/local/share/ca-certificates
-	#sudo update-ca-certificates
-	# For MacOS
-	sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ca.crt
-
-minio: minio_users minio_root
-
-# Create a MinIO user secret
-minio_users:
-	kubectl --namespace minio \
-		create secret \
-		generic centralized-minio-users \
-		--from-file=user=/dev/stdin <<< $$(echo -e "username=${MINIO_USERNAME}\npassword=${MINIO_PASSWORD}\ndisabled=false\npolicies=readwrite,consoleAdmin,diagnostics\nsetPolicies=false") \
-		--output json \
-		--dry-run=client | \
-		kubeseal --format yaml \
-		--controller-name=sealed-secrets \
-		--controller-namespace=sealed-secrets | \
-		tee ./devops-app/bootstrap/manifests/minio-users-secret.yaml
-	kubectl apply -f ./devops-app/bootstrap/manifests/minio-users-secret.yaml
-	git add ./devops-app/bootstrap/manifests/minio-users-secret.yaml
-	git commit -m "Add MinIO users secret"
-	git push
-
-# Create a MinIO root user secret
-minio_root:
-	kubectl --namespace minio \
-		create secret \
-		generic minio-root \
-		--from-literal=root-user=$(MINIO_ROOT_USER) \
-		--from-literal=root-password=$(MINIO_ROOT_PASSWORD) \
-		--output json \
-		--dry-run=client | \
-		kubeseal --format yaml \
-		--controller-name=sealed-secrets \
-		--controller-namespace=sealed-secrets | \
-		tee ./devops-app/bootstrap/manifests/minio-root-secret.yaml
-	kubectl apply -f ./devops-app/bootstrap/manifests/minio-root-secret.yaml
-	git add ./devops-app/bootstrap/manifests/minio-root-secret.yaml
-	git commit -m "Add MinIO root credentials"
 	git push
 
 sonarqube: sonarqube_psql_backup sonarqube_credentials
