@@ -14,84 +14,84 @@ spec:
       name: '{{cluster}}-argo-cd'
     spec:
       project: ci-cd
-  destination:
-    namespace: argocd
-    server: '{{url}}'
-  source:
-    repoURL: https://argoproj.github.io/argo-helm
-    chart: argo-cd
-    targetRevision: 6.7.18
-    helm:
-      releaseName: argocd
-      values: |-
-        nameOverride: argocd
-        fullnameOverride: argocd
-        controller:
-          metrics:
-            enabled: true
-            serviceMonitor:
-              enabled: true
-              labels:
-                release: prometheus
-              selector:
-                release: prometheus
-        dex:
-          enabled: false
-          serviceMonitor:
-            enabled: false
-            labels:
-              release: prometheus
-            selector:
-              release: prometheus
-        server:
-          metrics:
-            enabled: true
-            serviceMonitor:
-              enabled: true
-              labels:
-                release: prometheus
-              selector:
-                release: prometheus
-          ingress:
-            enabled: true
-            annotations:
-              cert-manager.io/cluster-issuer: local.devops
-              nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-            ingressClassName: nginx
-            hosts:
-              - cd.devops.local
-            paths:
-              - /
-            pathType: Prefix
-            tls:
-              - secretName: tls-cd.devops.local
+      destination:
+        namespace: argocd
+        server: '{{url}}'
+      source:
+        repoURL: https://argoproj.github.io/argo-helm
+        chart: argo-cd
+        targetRevision: 6.7.18
+        helm:
+          releaseName: argocd
+          values: |-
+            nameOverride: argocd
+            fullnameOverride: argocd
+            controller:
+              metrics:
+                enabled: true
+                serviceMonitor:
+                  enabled: true
+                  labels:
+                    release: prometheus
+                  selector:
+                    release: prometheus
+            dex:
+              enabled: false
+              serviceMonitor:
+                enabled: false
+                labels:
+                  release: prometheus
+                selector:
+                  release: prometheus
+            server:
+              metrics:
+                enabled: true
+                serviceMonitor:
+                  enabled: true
+                  labels:
+                    release: prometheus
+                  selector:
+                    release: prometheus
+              ingress:
+                enabled: true
+                annotations:
+                  cert-manager.io/cluster-issuer: local.devops
+                  nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+                  nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+                ingressClassName: nginx
                 hosts:
                   - cd.devops.local
-            https: true
-          ingressGrpc:
-            enabled: true
-            ingressClassName: nginx
-          metrics:
-            enabled: true
-            serviceMonitor:
+                paths:
+                  - /
+                pathType: Prefix
+                tls:
+                  - secretName: tls-cd.devops.local
+                    hosts:
+                      - cd.devops.local
+                https: true
+              ingressGrpc:
+                enabled: true
+                ingressClassName: nginx
+              metrics:
+                enabled: true
+                serviceMonitor:
+                  enabled: true
+                  labels:
+                    release: prometheus
+                  selector:
+                    release: prometheus
+            applicationSet:
               enabled: true
-              labels:
-                release: prometheus
-              selector:
-                release: prometheus
-        applicationSet:
-          enabled: true
-          metrics:
-            enabled: true
-            serviceMonitor:
+              metrics:
+                enabled: true
+                serviceMonitor:
+                  enabled: true
+                  labels:
+                    release: prometheus
+                  selector:
+                    release: prometheus
+            notifications:
               enabled: true
-              labels:
-                release: prometheus
-              selector:
-                release: prometheus
-        notifications:
-          enabled: true
   syncPolicy:
     automated:
       selfHeal: false
