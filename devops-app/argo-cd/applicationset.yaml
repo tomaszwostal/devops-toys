@@ -59,16 +59,13 @@ spec:
                   nginx.ingress.kubernetes.io/ssl-passthrough: "true"
                   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
                 ingressClassName: nginx
-                hosts:
-                  - cd.devops.local
-                paths:
-                  - /
+                hostname: cd.devops.local
+                path: /
                 pathType: Prefix
-                tls:
-                  - secretName: tls-cd.devops.local
-                    hosts:
-                      - cd.devops.local
-                https: true
+                extraTls:
+                  hosts:
+                  - cd.devops.local
+                  secretName: tls-cd.devops.local
               ingressGrpc:
                 enabled: true
                 ingressClassName: nginx
