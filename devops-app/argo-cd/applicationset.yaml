@@ -67,9 +67,9 @@ spec:
                   hosts:
                   - cd.devops.local
                   secretName: tls-cd.devops.local
-              ingressGrpc:
-                enabled: true
-                ingressClassName: nginx
+              # ingressGrpc:
+              #   enabled: true
+              #   ingressClassName: nginx
               metrics:
                 enabled: true
                 serviceMonitor:
