@@ -52,14 +52,21 @@ spec:
                     release: prometheus
                   selector:
                     release: prometheus
-              metrics:
+              ingress:
                 enabled: true
-                serviceMonitor:
-                  enabled: true
-                  labels:
-                    release: prometheus
-                  selector:
-                    release: prometheus
+                annotations:
+                  cert-manager.io/cluster-issuer: devops-local
+                  nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+                  nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+                ingressClassName: nginx
+                hostname: cd.devops.local
+                path: /
+                pathType: ImplementationSpecific
+                tls: true
+              ingressGrpc:
+                enabled: false
+                ingressClassName: nginx
+
             applicationSet:
               enabled: true
               metrics:
