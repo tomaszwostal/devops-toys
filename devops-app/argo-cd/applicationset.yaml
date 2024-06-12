@@ -61,10 +61,9 @@ spec:
                 ingressClassName: nginx
                 hostname: cd.devops.local
                 path: /
-                pathType: ImplementationSpecific
                 tls: true
               ingressGrpc:
-                enabled: false
+                enabled: true
                 ingressClassName: nginx
 
             applicationSet:
@@ -79,12 +78,12 @@ spec:
                     release: prometheus
             notifications:
               enabled: true
-  syncPolicy:
-    automated:
-      selfHeal: true
-      prune: true
-      allowEmpty: false
-    syncOptions:
-      - CreateNamespace=true
-      - ServerSideApply=false
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
 
