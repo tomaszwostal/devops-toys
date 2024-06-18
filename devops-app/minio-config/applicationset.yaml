@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: sealed-secrets
+  name: minio-config
   namespace: argocd
 spec:
   generators:
@@ -11,21 +11,16 @@ spec:
         url: https://kubernetes.default.svc
   template:
     metadata:
-      name: '{{cluster}}-sealed-secrets'
+      name: '{{cluster}}-minio-config'
     spec:
       project: core
       destination:
-        namespace: sealed-secrets
+        namespace: minio
         server: '{{url}}'
       source:
-        repoURL: https://bitnami-labs.github.io/sealed-secrets
-        chart: sealed-secrets
-        targetRevision: 2.*.*
-        helm:
-          releaseName: sealed-secrets
-          values: |-
-            nameOverride: sealed-secrets
-            fullnameOverride: sealed-secrets
+        repoURL: https://github.com/tomaszwostal/devops-toys.git
+        path: minio-config/{{cluster}}
+        targetRevision: v0.2
       syncPolicy:
         automated:
           selfHeal: true
@@ -34,4 +29,5 @@ spec:
         syncOptions:
           - CreateNamespace=true
           - ServerSideApply=false
+          - RespectIgnoreDifferences=true
 

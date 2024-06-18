@@ -1,0 +1,15 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: loki-gateway-auth
+  namespace: loki
+spec:
+  encryptedData:
+    .htpasswd: AgCga7ri0RjvaI68wzpI4R2JH/Hal2h93dX7cUB7o5hf9fdwf+/j+6BfU7D8zf2ym6NK3ueY6U59vdn5gURSWhuq2Ni0RkH6oWHMewZX0nl1vdCWYWctQykjy5B9U5Fd1qkiRj7pEIOKtY+0HMpQF/CWnWtl5XZt0g4P8oryyROQCDnVcTwK+te+bAKzTsykIs+ONSRVjvnZcFiRnwECjcqep/nIZBqFpQfR4YorJRIr50yf57OdYumESxx1HPNM4bSOTaTTBt3AXjerY0/ITQFaYANwF1jG1W1cRhI2dBKrOeyEeZIj7FJV8E3AO7qCLFPhbkRnzuNanZxU0yFefdXZ7NuxiKkiete3KKeNFWffoZ09r+e23emFrAEKw6o0J1eTWoIK2w8BD0njYZz7Ucn2th/bIcRwBG/hfpFCiO95FAukCXFzvZd1XZAAgeHQowXjA8UUCp3wneGaBsH+O5mQzowOIqTzCuywQAfdXwOMqyDQNwi685FSNdWjHEGXJJA062x/Qzipj63ToWHD7BDlW3uzppLwhvOlss1VWCuI+vmJvHLfpAu9Ex99exl01qq70vfqAbdOw0CX/vbeXl06HTGkOgefpZ0tyTPVbV05SH4sWz/rtO5CZE/xXtv9NIqpz7YVjoI1pnRZQuXHc5mCKK2hOSTyUayvvxTzPwayqpWrv1rZBfv8JRqbGovJFKdiXcbqaRLZjfG42e13/x0n9890yllomll/1k0ptugYc5lnsxnzOB3fBVYPILsnbzCroRpoOqohyMeZJ28AAiK4KPz+qw0Fae9wTkWrugkyEoVFj60cawopocSI
+  template:
+    metadata:
+      creationTimestamp: null
+      name: loki-gateway-auth
+      namespace: loki

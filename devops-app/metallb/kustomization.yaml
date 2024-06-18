@@ -3,4 +3,3 @@ kind: Kustomization
 
 resources:
   - applicationset.yaml
-  - ip-addresspool.yaml

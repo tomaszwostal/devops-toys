@@ -13,7 +13,7 @@ spec:
     targetRevision: v0.2
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: argocdswds
   syncPolicy:
     automated:
       selfHeal: true

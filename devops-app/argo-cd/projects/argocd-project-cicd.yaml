@@ -2,10 +2,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: core
+  name: cicd
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
-  description: "Core system applications"
+  description: "CI/CD applications"
   sourceRepos:
   - '*'
   destinations:

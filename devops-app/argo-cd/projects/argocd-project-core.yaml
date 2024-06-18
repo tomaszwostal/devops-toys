@@ -2,10 +2,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: observability
+  name: core
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
-  description: "Observability applications"
+  description: "Core system applications"
   sourceRepos:
   - '*'
   destinations:
