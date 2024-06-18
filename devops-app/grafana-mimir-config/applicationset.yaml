@@ -19,7 +19,7 @@ spec:
         server: '{{url}}'
       source:
         repoURL: https://github.com/tomaszwostal/devops-toys.git
-        path: grafana-mimir-config/{{cluster}}
+        path: devops-app/grafana-mimir-config/{{cluster}}
         targetRevision: v0.2
       syncPolicy:
         automated:

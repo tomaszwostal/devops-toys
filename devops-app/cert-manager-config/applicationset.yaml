@@ -19,7 +19,7 @@ spec:
         server: '{{url}}'
       source:
         repoURL: https://github.com/tomaszwostal/devops-toys.git
-        path: cert-manager-config/{{cluster}}
+        path: devops-app/cert-manager-config/{{cluster}}
         targetRevision: v0.2
       syncPolicy:
         automated:
