@@ -13,7 +13,7 @@ spec:
     metadata:
       name: '{{cluster}}-argo-cd'
     spec:
-      project: ci-cd
+      project: default
       destination:
         namespace: argocd
         server: '{{url}}'
