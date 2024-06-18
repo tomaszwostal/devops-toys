@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: grafana-promtail-config
+  name: metallb-config
   namespace: argocd
 spec:
   generators:
@@ -11,15 +11,15 @@ spec:
         url: https://kubernetes.default.svc
   template:
     metadata:
-      name: '{{cluster}}-grafana-promtail-config'
+      name: '{{cluster}}-metallb-config'
     spec:
       project: core
       destination:
-        namespace: promtail
+        namespace: metallb-system
         server: '{{url}}'
       source:
         repoURL: https://github.com/tomaszwostal/devops-toys.git
-        path: devops-app/minio-config/{{cluster}}
+        path: devops-app/metallb-config/{{cluster}}
         targetRevision: v0.2
       syncPolicy:
         automated:

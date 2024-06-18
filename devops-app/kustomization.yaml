@@ -7,10 +7,15 @@ resources:
   # - argo-workflows
   # - bootstrap
   - cert-manager
+  - cert-manager-config
   # - cnpg
   - devops-app
-  # - grafana-loki
-  # - grafana-promtail
+  - grafana-loki
+  - grafana-loki-config
+  - grafana-promtail
+  - grafana-promtail-config
+  - grafana-mimir
+  - grafana-mimir-config
   - ingress-nginx
   # - jaeger
   - sealed-secrets
@@ -18,8 +23,10 @@ resources:
   # - linkerd
   # - linkerd-jaeger
   # - linkerd-viz
-  # - metallb
-  # - minio
+  - metallb
+  - metallb-config
+  - minio
+  - minio-config
   # - sonarqube
   # - trust-manager
   # - redis

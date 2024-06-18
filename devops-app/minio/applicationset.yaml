@@ -20,7 +20,7 @@ spec:
       source:
         repoURL: https://charts.bitnami.com/bitnami
         chart: minio
-        targetRevision: 12.10.10
+        targetRevision: 12.*.*
         helm:
           releaseName: minio
           values: |
