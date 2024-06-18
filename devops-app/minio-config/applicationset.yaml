@@ -19,7 +19,7 @@ spec:
         server: '{{url}}'
       source:
         repoURL: https://github.com/tomaszwostal/devops-toys.git
-        path: minio-config/{{cluster}}
+        path: devops-app/minio-config/{{cluster}}
         targetRevision: v0.2
       syncPolicy:
         automated:
