@@ -65,8 +65,8 @@ spec:
                     backend: s3
                     s3:
                       endpoint: minio.minio.svc.cluster.local:9000
-                      secret_access_key: ${accessKey}
-                      access_key_id: ${secretKey}
+                      secret_access_key: ${accesskey}
+                      access_key_id: ${secretkey}
                       insecure: true
                 blocks_storage:
                   s3:
