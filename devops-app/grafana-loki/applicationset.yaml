@@ -34,10 +34,10 @@ spec:
               extraEnvFrom:
                 - minio-creds
             distributor:
-              extraArgs:
-                - '-config.expand-env=true'
-              extraEnvFrom:
-                - minio-creds
+              # extraArgs:
+              #   - '-config.expand-env=true'
+              # extraEnvFrom:
+              #   - minio-creds
             querier:
               extraArgs:
                 - '-config.expand-env=true'
