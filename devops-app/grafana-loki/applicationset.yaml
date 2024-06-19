@@ -29,6 +29,10 @@ spec:
             serviceMonitor:
               enabled: true
             loki:
+              extraArgs:
+                - '-config.expand-env=true'
+              extraEnvFrom:
+                - minio-creds
               schemaConfig:
                 configs:
                 - from: 2020-05-15
@@ -47,7 +51,7 @@ spec:
                   shared_store: s3
 
                 aws:
-                  s3: s3://minioadmin:minioadmin@minio.minio.svc.cluster.local:9000
+                  s3: s3://${accesskey}:${secretkey}@minio.minio.svc.cluster.local:9000
                   s3forcepathstyle: true
                   bucketnames: loki
 
