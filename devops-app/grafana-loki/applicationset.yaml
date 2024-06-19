@@ -26,9 +26,6 @@ spec:
           values: |-
             nameOverride: "grafana-loki"
             fullnameOverride: "grafana-loki"
-            global:
-              extraArgs:
-                - '-config.expand-env=true'
             serviceMonitor:
               enabled: true
             ingester:
