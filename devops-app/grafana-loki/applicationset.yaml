@@ -29,41 +29,41 @@ spec:
             serviceMonitor:
               enabled: true
             ingester:
-              extraArgs:
-                - '-config.expand-env=true'
-              extraEnvFrom:
-                - minio-creds
+              # extraArgs:
+              #   - '-config.expand-env=true'
+              # extraEnvFrom:
+              #   - minio-creds
             distributor:
-              extraArgs:
-                - '-config.expand-env=true'
+              # extraArgs:
+              #   - '-config.expand-env=true'
               # extraEnvFrom:
               #   - minio-creds
             querier:
-              extraArgs:
-                - '-config.expand-env=true'
-              extraEnvFrom:
-                - minio-creds
+              # extraArgs:
+              #   - '-config.expand-env=true'
+              # extraEnvFrom:
+              #   - minio-creds
             querierFrontend:
-              extraArgs:
-                - '-config.expand-env=true'
-              extraEnvFrom:
-                - minio-creds
+              # extraArgs:
+              #   - '-config.expand-env=true'
+              # extraEnvFrom:
+              #   - minio-creds
             queryScheduler:
-              extraArgs:
-                - '-config.expand-env=true'
-              extraEnvFrom:
-                - minio-creds
+              # extraArgs:
+              #   - '-config.expand-env=true'
+              # extraEnvFrom:
+              #   - minio-creds
             tableManager:
               enabled: false
-              extraArgs:
-                - '-config.expand-env=true'
-              extraEnvFrom:
-                - minio-creds
+              # extraArgs:
+              #   - '-config.expand-env=true'
+              # extraEnvFrom:
+              #   - minio-creds
             gateway:
-              extraArgs:
-                - '-config.expand-env=true'
-              extraEnvFrom:
-                - minio-creds
+              # extraArgs:
+              #   - '-config.expand-env=true'
+              # extraEnvFrom:
+              #   - minio-creds
               enabled: true
               basicAuth:
                 enabled: true
@@ -83,10 +83,10 @@ spec:
                     hosts:
                       - loki.devops.local
             compactor:
-              extraArgs:
-                - '-config.expand-env=true'
-              extraEnvFrom:
-                - minio-creds
+              # extraArgs:
+              #   - '-config.expand-env=true'
+              # extraEnvFrom:
+              #   - minio-creds
             ruler:
               enabled: true
               # extraArgs:
@@ -120,18 +120,18 @@ spec:
                             labels:
                               severity: critical
             indexGateway:
-              extraArgs:
-                - '-config.expand-env=true'
-              extraEnvFrom:
-                - minio-creds
+              # extraArgs:
+              #   - '-config.expand-env=true'
+              # extraEnvFrom:
+              #   - minio-creds
             memcachedExporter:
               enabled: true
 
             loki:
-              extraArgs:
-                - '-config.expand-env=true'
-              extraEnvFrom:
-                - minio-creds
+              # extraArgs:
+              #   - '-config.expand-env=true'
+              # extraEnvFrom:
+              #   - minio-creds
               config: |
                 auth_enabled: true
                 common:
