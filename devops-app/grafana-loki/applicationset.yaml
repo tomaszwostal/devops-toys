@@ -28,28 +28,106 @@ spec:
             fullnameOverride: "grafana-loki"
             serviceMonitor:
               enabled: true
-            loki:
-              config:
+                        # loki:
+            #   # extraArgs:
+            #   #   - '-config.expand-env=true'
+            #   # extraEnvFrom:
+            #   #   - minio-creds
+              config: |
+                auth_enabled: true
+                common:
+                  compactor_address: {{ include "loki.compactorFullname" . }}:3100
+
                 schema_config:
                   configs:
-                    - from: 2020-10-24
-                      store: boltdb-shipper
-                      object_store: s3
-                      schema: v11
-                      index:
-                        prefix: index_
-                        period: 168h
+                  - from: 2020-05-15
+                    store: boltdb-shipper
+                    object_store: s3
+                    schema: v11
+                    index:
+                      prefix: loki_index_
+                      period: 24h
+
                 storage_config:
                   boltdb_shipper:
-                    active_index_directory: /data/loki/index
+                    active_index_directory: /var/loki/index
+                    cache_location: /var/loki/cache
+                    cache_ttl: 24h
                     shared_store: s3
-                  aws:
-                    s3: s3://minioadmin:minioadmin@minio.minio.svc.cluster.local:9000
-                    bucketnames: loki
-                    # endpoint: minio.default.svc.cluster.local:9000
-                    # region: us-east-1
-                    s3forcepathstyle: true
 
+                  aws:
+                    s3: s3://${accesskey}:${secretkey}@minio.minio.svc.cluster.local:9000
+                    s3forcepathstyle: true
+                    bucketnames: loki
+
+            #     frontend_worker:
+            #       {{- if .Values.queryScheduler.enabled }}
+            #       scheduler_address: {{ include "loki.querySchedulerFullname" . }}:9095
+            #       {{- else }}
+            #       frontend_address: {{ include "loki.queryFrontendFullname" . }}-headless:9095
+            #       {{- end }}
+            #
+            #     distributor:
+            #       ring:
+            #         kvstore:
+            #           store: memberlist
+            #
+            #     compactor:
+            #       working_directory: /var/loki/compactor
+            #       shared_store: s3
+            #
+            #     memberlist:
+            #       join_members:
+            #         - {{ include "loki.fullname" . }}-memberlist
+            #
+            #     ingester_client:
+            #       grpc_client_config:
+            #         grpc_compression: gzip
+            #
+            #     ingester:
+            #       lifecycler:
+            #         ring:
+            #           kvstore:
+            #             store: memberlist
+            #           replication_factor: 1
+            #       chunk_idle_period: 30m
+            #       chunk_block_size: 262144
+            #       chunk_encoding: snappy
+            #       chunk_retain_period: 1m
+            #       max_transfer_retries: 0
+            #       wal:
+            #         dir: /var/loki/wal
+            #
+            #     ruler:
+            #       storage:
+            #         type: s3
+            #         s3:
+            #           s3: s3://minioadmin:minioadmin@minio.minio.svc.cluster.local:9000/loki-rules
+            #           s3forcepathstyle: true
+            #
+            #
+            # loki:
+            #   config:
+            #     schema_config:
+            #       configs:
+            #         - from: 2020-10-24
+            #           store: boltdb-shipper
+            #           object_store: s3
+            #           schema: v11
+            #           index:
+            #             prefix: index_
+            #             period: 168h
+            #     storage_config:
+            #       boltdb_shipper:
+            #         active_index_directory: /data/loki/index
+            #         shared_store: s3
+            #       aws:
+            #         s3: s3://minioadmin:minioadmin@minio.minio.svc.cluster.local:9000
+            #         bucketnames: loki
+            #         # endpoint: minio.default.svc.cluster.local:9000
+            #         # region: us-east-1
+            #         s3forcepathstyle: true
+            #
             # ingester:
             #   # extraArgs:
             #   #   - '-config.expand-env=true'
