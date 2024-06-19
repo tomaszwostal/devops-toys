@@ -31,7 +31,6 @@ spec:
             ingester:
               extraArgs:
                 - '-config.expand-env=true'
-              extraEnvFrom: ["minio-creds"]
             distributor:
               extraArgs:
                 - '-config.expand-env=true'
