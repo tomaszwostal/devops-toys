@@ -60,7 +60,25 @@ spec:
                   s3: s3://${accesskey}:${secretkey}@minio.minio.svc.cluster.local:9000
                   s3forcepathstyle: true
                   bucketnames: loki
+            distributor:
+              extraArgs:
+                - -config.expand-env=true
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
             ingester:
+              extraArgs:
+                - -config.expand-env=true
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+            querier:
+              extraArgs:
+                - -config.expand-env=true
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+            queryFrontend:
               extraArgs:
                 - -config.expand-env=true
               extraEnvFrom:
