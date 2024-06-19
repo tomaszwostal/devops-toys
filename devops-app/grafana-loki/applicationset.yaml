@@ -26,6 +26,11 @@ spec:
           values: |-
             nameOverride: "grafana-loki"
             fullnameOverride: "grafana-loki"
+            global:
+              extraArgs:
+                - '-config.expand-env=true'
+              extraEnvFrom:
+                - minio-creds
             serviceMonitor:
               enabled: true
             ingester:
@@ -108,9 +113,6 @@ spec:
               enabled: true
 
             loki:
-              extraArgs:
-                - '-config.expand-env=true'
-              extraEnvFrom: ["minio-creds"]
               config: |
                 auth_enabled: true
                 common:
