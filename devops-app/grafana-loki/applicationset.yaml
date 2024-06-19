@@ -134,7 +134,7 @@ spec:
                     shared_store: s3
 
                   aws:
-                    s3: s3://${{accesskey}}:${{secretkey}}@minio.minio.svc.cluster.local:9000
+                    s3: s3://${accesskey}:${secretkey}@minio.minio.svc.cluster.local:9000
                     s3forcepathstyle: true
                     bucketnames: loki
 
