@@ -28,7 +28,7 @@ spec:
             fullnameOverride: "grafana-loki"
             serviceMonitor:
               enabled: true
-                        # loki:
+            loki:
             #   # extraArgs:
             #   #   - '-config.expand-env=true'
             #   # extraEnvFrom:
