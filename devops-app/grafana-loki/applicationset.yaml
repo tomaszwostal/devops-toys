@@ -89,10 +89,10 @@ spec:
                 - minio-creds
             ruler:
               enabled: true
-              extraArgs:
-                - '-config.expand-env=true'
-              extraEnvFrom:
-                - minio-creds
+              # extraArgs:
+              #   - '-config.expand-env=true'
+              # extraEnvFrom:
+              #   - minio-creds
               directories:
                 devops-toys:
                   rules1.txt: |
