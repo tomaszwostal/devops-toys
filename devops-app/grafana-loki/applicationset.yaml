@@ -31,6 +31,7 @@ spec:
             ingester:
               extraArgs:
                 - '-config.expand-env=true'
+              extraEnvFrom: ["minio-creds"]
             distributor:
               extraArgs:
                 - '-config.expand-env=true'
@@ -40,6 +41,7 @@ spec:
             querierFrontend:
               extraArgs:
                 - '-config.expand-env=true'
+              extraEnvFrom: ["minio-creds"]
             queryScheduler:
               extraArgs:
                 - '-config.expand-env=true'
