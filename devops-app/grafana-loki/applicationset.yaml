@@ -60,6 +60,12 @@ spec:
                   s3: s3://${accesskey}:${secretkey}@minio.minio.svc.cluster.local:9000
                   s3forcepathstyle: true
                   bucketnames: loki
+            ingester:
+              extraArgs:
+                - -config.expand-env=true
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
 
               # storage_config:
               #   boltdb_shipper:
