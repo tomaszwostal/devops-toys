@@ -22,7 +22,7 @@ spec:
         chart: trust-manager
         targetRevision: v0.*.*
         helm:
-          releaseName: jaeger
+          releaseName: trust-manager
           values: |-
             crds:
               enabled: true
