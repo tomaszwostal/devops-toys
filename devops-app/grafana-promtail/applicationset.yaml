@@ -42,9 +42,6 @@ spec:
                   secretKeyRef:
                     name: promtail-credentials
                     key: password
-              # extraEnvFrom:
-              #   - secretRef:
-              #       name: promtail-credentials
             config:
               clients:
                 - url: http://grafana-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
