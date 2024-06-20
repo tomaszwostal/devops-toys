@@ -26,8 +26,8 @@ spec:
           values: |-
             nameOverride: "grafana-promtail"
             fullnameOverride: "grafana-promtail"
-            serviceMonitor:
-              enabled: true
+            # serviceMonitor:
+            #   enabled: true
             extraArgs:
               - '-config.expand-env=true'
               - '-client.external-labels=cluster={{cluster}}'
