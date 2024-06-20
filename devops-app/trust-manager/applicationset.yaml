@@ -33,11 +33,11 @@ spec:
                   serviceMonitor:
                     enabled: true
                     prometheusInstance: prometheus-prometheus
-  syncPolicy:
-    automated:
-      selfHeal: true
-      prune: true
-      allowEmpty: false
-    syncOptions:
-      - CreateNamespace=true
-      - ServerSideApply=false
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
