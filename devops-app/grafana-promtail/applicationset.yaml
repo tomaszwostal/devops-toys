@@ -26,9 +26,9 @@ spec:
           values: |-
             nameOverride: "grafana-promtail"
             fullnameOverride: "grafana-promtail"
-            # extraArgs:
-            #   - '-config.expand-env=true'
-            #   - '-client.external-labels=cluster={{cluster}}'
+            extraArgs:
+              - '-config.expand-env=true'
+              - '-client.external-labels=cluster={{cluster}}'
             # extraEnv:
             #   - name: LOKI_USERNAME
             #     valueFrom:
