@@ -28,11 +28,11 @@ spec:
               enabled: true
             app:
               metrics:
-              service:
-                enabled: true
-                servicemonitor:
+                service:
                   enabled: true
-                  prometheusInstance: prometheus-prometheus
+                  servicemonitor:
+                    enabled: true
+                    prometheusInstance: prometheus-prometheus
       syncPolicy:
         automated:
           selfHeal: true
