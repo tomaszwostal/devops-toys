@@ -26,6 +26,8 @@ spec:
           values: |-
             nameOverride: "grafana-promtail"
             fullnameOverride: "grafana-promtail"
+            serviceMonitor:
+              enabled: true
             extraArgs:
               - '-config.expand-env=true'
               - '-client.external-labels=cluster={{cluster}}'
@@ -40,8 +42,6 @@ spec:
                   secretKeyRef:
                     name: promtail-credentials
                     key: password
-            serviceMonitor:
-              enabled: true
             # config:
             #   clients:
             #     - url: http://grafana-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
