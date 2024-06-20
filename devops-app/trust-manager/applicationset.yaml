@@ -18,8 +18,8 @@ spec:
         namespace: trust-manager
         server: '{{url}}'
       source:
-        repoURL: https://jaegertracing.github.io/helm-charts
-        chart: jaeger
+        repoURL: https://charts.jetstack.io
+        chart: trust-manager
         targetRevision: v0.*.*
         helm:
           releaseName: jaeger
