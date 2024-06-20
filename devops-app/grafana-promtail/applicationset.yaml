@@ -29,17 +29,17 @@ spec:
             extraArgs:
               - '-config.expand-env=true'
               - '-client.external-labels=cluster={{cluster}}'
-            # extraEnv:
-            #   - name: LOKI_USERNAME
-            #     valueFrom:
-            #       secretKeyRef:
-            #         name: promtail-credentials
-            #         key: username
-            #   - name: LOKI_PASSWORD
-            #     valueFrom:
-            #       secretKeyRef:
-            #         name: promtail-credentials
-            #         key: password
+            extraEnv:
+              - name: LOKI_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: promtail-credentials
+                    key: username
+              - name: LOKI_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: promtail-credentials
+                    key: password
             # serviceMonitor:
             #   enabled: true
             # config:
