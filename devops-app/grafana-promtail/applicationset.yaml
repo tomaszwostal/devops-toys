@@ -31,16 +31,27 @@ spec:
             extraArgs:
               - '-config.expand-env=true'
               - '-client.external-labels=cluster={{cluster}}'
-            extraEnvFrom:
-              - secretRef:
-                  name: promtail-credentials
+            extraEnv:
+              - name: LOKI_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: promtail-credentials
+                    key: username
+              - name: LOKI_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: promtail-credentials
+                    key: password
+              extraEnvFrom:
+                - secretRef:
+                    name: promtail-credentials
             config:
               clients:
                 - url: http://grafana-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
                   tenant_id: devops-toys
                   basic_auth:
-                    password: ${username}
-                    username: ${password}
+                    password: "${LOKI_PASSWORD}"
+                    username: "${LOKI_USERNAME}"
       syncPolicy:
         automated:
           selfHeal: true
