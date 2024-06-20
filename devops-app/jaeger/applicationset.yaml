@@ -1,0 +1,154 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: jaeger
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-jaeger'
+    spec:
+      project: monitoring
+      destination:
+        namespace: jaeger
+        server: '{{url}}'
+      source:
+        repoURL: https://jaegertracing.github.io/helm-charts
+        chart: jaeger
+        targetRevision: 0.*.*
+        helm:
+          releaseName: jaeger
+          values: |-
+            provisionDataStore:
+              cassandra: true
+
+            nameOverride: "jaeger"
+            fullnameOverride: "jaeger"
+
+            networkPolicy:
+              enabled: false
+
+            cassandra:
+              persistence:
+                enabled: false
+
+            ingester:
+              enabled: false
+              serviceMonitor:
+                enabled: true
+
+            agent:
+              resources:
+              serviceMonitor:
+                enabled: true
+
+            collector:
+              serviceMonitor:
+                enabled: true
+
+              service:
+                grpc:
+                  port: 14250
+                  name: grpc
+                http:
+                  port: 14268
+                  name: http
+                zipkin:
+                  port: 9411
+                  name: zipkin
+                otlp:
+                  grpc:
+                    port: 4317
+                    name: otlp-grpc
+                  http:
+                    port: 4318
+                    name: otlp-http
+              ingress:
+                enabled: true
+                ingressClassName: nginx
+                annotations:
+                  cert-manager.io/cluster-issuer: devops-local
+                  nginx.ingress.kubernetes.io/rewrite-target: /
+                path: /
+                hosts:
+                  - 'jaeger-colector.devops.local'
+                tls:
+                  - secretName: 'tls-jaeger-collector.devops.local'
+                    hosts:
+                      - 'jaeger-collector.devops.local'
+              networkPolicy:
+                enabled: false
+
+            query:
+              enabled: true
+              agentSidecar:
+                enabled: true
+              extraEnv:
+                - name: METRICS_STORAGE_TYPE
+                  value: prometheus
+                - name: PROMETHEUS_SERVER_URL
+                  value: http://prometheus-prometheus.monitoring.svc.cluster.local:9090
+                - name: PROMETHEUS_QUERY_SUPPORT_SPANMETRICS_CONNECTOR
+                  value: "true"
+                - name: PROMETHEUS_QUERY_NORMALIZE_CALLS
+                  value: "true"
+                - name: PROMETHEUS_QUERY_NORMALIZE_DURATION
+                  value: "true"
+              ingress:
+                enabled: true
+                ingressClassName: nginx
+                annotations:
+                  cert-manager.io/cluster-issuer: devops-local
+                  nginx.ingress.kubernetes.io/rewrite-target: /
+                path: /
+                hosts:
+                  - 'jaeger.devops.local'
+                tls:
+                  - secretName: 'tls-jaeger.devops.local'
+                    hosts:
+                      - 'jaeger.devops.local'
+                health:
+                  exposed: false
+              serviceMonitor:
+                enabled: true
+              networkPolicy:
+                enabled: false
+
+            hotrod:
+              enabled: true
+              replicaCount: 1
+              extraArgs:
+                - --otel-exporter=otlp
+                - --jaeger-ui=http://jaeger.devops.local
+              extraEnv:
+                - name: OTEL_EXPORTER_OTLP_ENDPOINT
+                  value: http://jaeger-collector:4318
+                - name: JAEGER_TAGS
+                  value: app=hotrod
+              ingress:
+                enabled: true
+                ingressClassName: nginx
+                annotations:
+                  cert-manager.io/cluster-issuer: devops-local
+                  nginx.ingress.kubernetes.io/rewrite-target: /
+                path: /
+                hosts:
+                  - 'hotrod.devops.local'
+                tls:
+                  - secretName: 'tls-hotrod.devops.local'
+                    hosts:
+                      - 'hotrod.devops.local'
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+
