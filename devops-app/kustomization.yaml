@@ -28,7 +28,7 @@ resources:
   - minio
   - minio-config
   # - sonarqube
-  # - trust-manager
+  - trust-manager
   # - redis
   # - opentelemetry
   # - openfeature

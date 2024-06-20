@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: trust-manager
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-trust-manager'
+    spec:
+      project: default
+      destination:
+        namespace: trust-manager
+        server: '{{url}}'
+      source:
+        repoURL: https://jaegertracing.github.io/helm-charts
+        chart: jaeger
+        targetRevision: v0.*.*
+        helm:
+          releaseName: jaeger
+          values: |-
+            crds:
+              enabled: true
+            app:
+              metrics:
+                service:
+                  enabled: true
+                  serviceMonitor:
+                    enabled: true
+                    prometheusInstance: prometheus-prometheus
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=false
