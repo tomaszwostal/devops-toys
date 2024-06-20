@@ -40,8 +40,8 @@ spec:
                   secretKeyRef:
                     name: promtail-credentials
                     key: password
-            # serviceMonitor:
-            #   enabled: true
+            serviceMonitor:
+              enabled: true
             # config:
             #   clients:
             #     - url: http://grafana-loki-gateway.loki.svc.cluster.local/loki/api/v1/push
