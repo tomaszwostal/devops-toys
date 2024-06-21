@@ -26,7 +26,6 @@ resources:
   - linkerd-viz-config
   # - linkerd
   - linkerd-jaeger
-  - linkerd-viz-config
   - linkerd-viz
   - metallb
   - metallb-config
