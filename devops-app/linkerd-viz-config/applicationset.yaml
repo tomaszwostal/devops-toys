@@ -15,7 +15,7 @@ spec:
     spec:
       project: core
       destination:
-        namespace: linkerd
+        namespace: linkerd-viz
         server: '{{url}}'
       source:
         repoURL: https://github.com/tomaszwostal/devops-toys.git
