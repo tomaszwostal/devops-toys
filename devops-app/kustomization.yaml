@@ -26,6 +26,7 @@ resources:
   - linkerd-viz-config
   # - linkerd
   - linkerd-jaeger
+  - linkerd-viz-config
   - linkerd-viz
   - metallb
   - metallb-config
@@ -34,7 +35,7 @@ resources:
   # - sonarqube
   - trust-manager
   # - redis
-  # - opentelemetry
+  - opentelemetry
   # - openfeature
   # - openfeature-demo
   # - otel-demo

@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: opentelemetry-operator
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-opentelemetry-operator'
+    spec:
+      project: observability
+      destination:
+        namespace: opentelemetry
+        server: '{{url}}'
+      source:
+        repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+        chart: opentelemetry-operator
+        targetRevision: 0.*.*
+        helm:
+          releaseName: opentelemetry-operator
+          values: |-
+            nameOverride: "opentelemetry-operator"
+            fullnameOverride: "opentelemetry-operator"
+            manager:
+              serviceMonitor:
+                enabled: true
+                metricsEndpoints:
+                  - port: metrics
+              prometheusRule:
+                enabled: true
+                groups: []
+                defaultRules:
+                  enabled: true
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+
