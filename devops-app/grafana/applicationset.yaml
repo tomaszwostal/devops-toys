@@ -26,7 +26,7 @@ spec:
           values: |-
             nameOverride: "grafana"
             fullnameOverride: "grafana"
-            envFromSecret: grafana-loki-tenanats
+            envFromSecret: grafana-loki-tenants
             ingress:
               enabled: true
               ingressClassName: nginx
