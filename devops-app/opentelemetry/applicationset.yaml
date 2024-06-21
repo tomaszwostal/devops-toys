@@ -26,8 +26,6 @@ spec:
           values: |-
             nameOverride: "opentelemetry-operator"
             fullnameOverride: "opentelemetry-operator"
-            command:
-              name: otelcol-k8s
             manager:
               collectorImage:
                 repository: otel/opentelemetry-collector-k8s
