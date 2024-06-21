@@ -19,7 +19,7 @@ spec:
         server: '{{url}}'
       source:
         repoURL: https://helm.linkerd.io/stable
-        chart: linkerd-control-plane
+        chart: linkerd-viz
         targetRevision: 1.*.*
         helm:
           releaseName: linkerd-viz
