@@ -15,7 +15,7 @@ spec:
     spec:
       project: observability
       destination:
-        namespace: opentelemetry
+        namespace: opentelemetry-operator-system
         server: '{{url}}'
       source:
         repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
@@ -26,7 +26,11 @@ spec:
           values: |-
             nameOverride: "opentelemetry-operator"
             fullnameOverride: "opentelemetry-operator"
+            command:
+              name: otelcol-k8s
             manager:
+              collectorImage:
+                repository: otel/opentelemetry-collector-k8s
               serviceMonitor:
                 enabled: true
                 metricsEndpoints:
