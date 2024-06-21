@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: opentelemetry-collector
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-opentelemetry-collector'
+    spec:
+      project: observability
+      destination:
+        namespace: opentelemetry-operator-system
+        server: '{{url}}'
+      source:
+        repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+        chart: opentelemetry-collector
+        targetRevision: 0.*.*
+        helm:
+          releaseName: opentelemetry-collectror
+          values: |-
+            nameOverride: "opentelemetry-collector"
+            fullnameOverride: "opentelemetry-collector"
+            mode: deployment
+            image:
+              repository: otel/opentelemetry-collector-k8s
+            command:
+              name: otelcol-k8s
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+
