@@ -10,6 +10,7 @@ resources:
   - cert-manager-config
   # - cnpg
   - devops-app
+  - grafana
   - grafana-loki
   - grafana-loki-config
   - grafana-promtail
