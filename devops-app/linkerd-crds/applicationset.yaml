@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: linkerd-crds
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-linkerd-crds'
+    spec:
+      project: core
+      destination:
+        namespace: linkerd
+        server: '{{url}}'
+      source:
+        repoURL: https://helm.linkerd.io/stable
+        chart: linkerd-crds
+        targetRevision: 1.*.*
+        helm:
+          releaseName: linkerd-crds
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+          - RespectIgnoreDifferences=true
+

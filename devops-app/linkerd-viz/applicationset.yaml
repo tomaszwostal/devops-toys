@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: linkerd-viz
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-linkerd-viz'
+    spec:
+      project: core
+      destination:
+        namespace: linkerd
+        server: '{{url}}'
+      source:
+        repoURL: https://helm.linkerd.io/stable
+        chart: linkerd-control-plane
+        targetRevision: 1.*.*
+        helm:
+          releaseName: linkerd-viz
+          values: |-
+            prometheusUrl: http://prometheus-prometheus.monitoring.svc.cluster.local:9090
+            jaegerUrl: http://jaeger-query.jaeger.svc.cluster.local
+            dashboard:
+              enforcedHostRegexp: linkerd-viz.devops.local
+            grafana:
+              externalUrl: https://grafana.devops.local
+            tap:
+              externalSecret: true
+              injectCaFrom: linkerd-viz/tap
+            tapInjector:
+              externalSecret: true
+              injectCaFrom: linkerd-viz/linkerd-tap-injector
+            prometheus:
+              enabled: false
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+          - RespectIgnoreDifferences=true
+

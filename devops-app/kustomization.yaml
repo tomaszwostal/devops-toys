@@ -21,9 +21,13 @@ resources:
   - sealed-secrets
   - kube-prometheus-stack
   - linkerd-config
+  - linkerd-crds
+  - linkerd
+  - linkerd-viz-config
   # - linkerd
-  # - linkerd-jaeger
-  # - linkerd-viz
+  - linkerd-jaeger
+  - linkerd-viz-config
+  - linkerd-viz
   - metallb
   - metallb-config
   - minio
