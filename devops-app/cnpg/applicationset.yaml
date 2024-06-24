@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cnpg
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-cnpg'
+    spec:
+      project: core
+      destination:
+        namespace: cnpg
+        server: '{{url}}'
+      source:
+        repoURL: https://cloudnative-pg.github.io/charts
+        chart: cloudnative-pg
+        targetRevision: 0.*.*
+        helm:
+          releaseName: cnpg
+          values: |-
+            nameOverride: cloudnative-pg
+            fullnameOverride: cloudnative-pg
+            config:
+              secret: true
+            monitoring:
+              podMonitorEnabled: true
+              grafanaDashboard:
+                create: true
+                namespace: grafana
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+          - RespectIgnoreDifferences=true
+

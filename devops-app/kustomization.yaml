@@ -8,7 +8,7 @@ resources:
   # - bootstrap
   - cert-manager
   - cert-manager-config
-  # - cnpg
+  - cnpg
   - devops-app
   - grafana
   - grafna-config
