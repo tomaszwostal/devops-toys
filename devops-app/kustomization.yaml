@@ -11,7 +11,7 @@ resources:
   - cnpg
   - devops-app
   - grafana
-  - grafna-config
+  - grafana-config
   - grafana-loki
   - grafana-loki-config
   - grafana-promtail
