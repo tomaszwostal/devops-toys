@@ -15,7 +15,7 @@ spec:
     spec:
       project: core
       destination:
-        namespace: cnpg
+        namespace: cnpg-system
         server: '{{url}}'
       source:
         repoURL: https://cloudnative-pg.github.io/charts
