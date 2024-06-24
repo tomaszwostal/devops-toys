@@ -40,6 +40,6 @@ spec:
           allowEmpty: false
         syncOptions:
           - CreateNamespace=true
-          - ServerSideApply=false
+          - ServerSideApply=true
           - RespectIgnoreDifferences=true
 
