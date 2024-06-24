@@ -27,6 +27,10 @@ spec:
             nameOverride: "grafana"
             fullnameOverride: "grafana"
             envFromSecret: grafana-loki-tenants
+            admin:
+              existingSecret: grafana-admin
+              userKey: GRAFANA_ADMIN_USER
+              passwordKey: GRAFANA_ADMIN_PASSWORD
             ingress:
               enabled: true
               ingressClassName: nginx
@@ -40,7 +44,7 @@ spec:
                   hosts:
                     - 'grafana.devops.local'
             persistence:
-              enabled: true
+              enabled: false
               accessModes:
                 - ReadWriteOnce
               size: 10Gi
