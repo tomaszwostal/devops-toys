@@ -19,132 +19,55 @@ spec:
         server: '{{url}}'
       source:
         repoURL: https://grafana.github.io/helm-charts
-        chart: loki-distributed
-        targetRevision: 0.*.*
+        chart: loki
+        targetRevision: 6.*.*
         helm:
           releaseName: grafana-loki
           values: |-
             nameOverride: "grafana-loki"
             fullnameOverride: "grafana-loki"
-            extraArgs:
-              - '-config.expand-env=true'
-            extraEnvFrom:
-              - secretRef:
-                name: minio-creds
-            serviceMonitor:
-              enabled: true
+            deploymentMode: Distributed
             loki:
-              extraArgs:
-                - -config.expand-env=true
-              extraEnvFrom:
-                - secretRef:
-                    name: minio-creds
-              config: |
-                auth_enabled: true
-                common:
-                  compactor_address: {{ include "loki.compactorFullname" . }}:3100
-            
-                schema_config:
-                  configs:
-                  - from: 2020-05-15
-                    store: boltdb-shipper
-                    object_store: s3
-                    schema: v11
-                    index:
-                      prefix: loki_index_
-                      period: 24h
-            
-                storage_config:
-                  boltdb_shipper:
-                    active_index_directory: /var/loki/index
-                    cache_location: /var/loki/cache
-                    cache_ttl: 24h
-                    shared_store: s3
-            
-                  aws:
-                    s3: s3://${accesskey}:${secretkey}@minio.minio.svc.cluster.local:9000
-                    s3forcepathstyle: true
-                    bucketnames: loki
-            
-                frontend_worker:
-                  {{- if .Values.queryScheduler.enabled }}
-                  scheduler_address: {{ include "loki.querySchedulerFullname" . }}:9095
-                  {{- else }}
-                  frontend_address: {{ include "loki.queryFrontendFullname" . }}-headless:9095
-                  {{- end }}
-            
-                distributor:
-                  ring:
-                    kvstore:
-                      store: memberlist
-            
-                compactor:
-                  working_directory: /var/loki/compactor
-                  shared_store: s3
-            
-                memberlist:
-                  join_members:
-                    - {{ include "loki.fullname" . }}-memberlist
-            
-                ingester_client:
-                  grpc_client_config:
-                    grpc_compression: gzip
-            
-                ingester:
-                  lifecycler:
-                    ring:
-                      kvstore:
-                        store: memberlist
-                      replication_factor: 1
-                  chunk_idle_period: 30m
-                  chunk_block_size: 262144
-                  chunk_encoding: snappy
-                  chunk_retain_period: 1m
-                  max_transfer_retries: 0
-                  wal:
-                    dir: /var/loki/wal
-            
-                ruler:
-                  storage:
-                    type: s3
-                    s3:
-                      s3: s3://minioadmin:minioadmin@minio.minio.svc.cluster.local:9000/loki-rules
-                      s3forcepathstyle: true
-              
+              auth_enabled: false
+              limits_config:
+                allow_structured_metadata: false
+              storage:
+                bucketNames:
+                  chunks: loki
+                  ruler: loki
+                  admin: loki
+                type: s3
+                s3:
+                  endpoint: http://minio.minio.svc.cluster.local:9000/loki
+                  insecure: true
+                  accessKeyId: ${accesskey}
+                  secretAccessKey: ${secretkey}
+                  s3ForcePathStyle: true
               schemaConfig:
                 configs:
-                - from: 2020-05-15
-                  store: boltdb-shipper
+                - from: "2020-12-11"
+                  index:
+                    period: 24h
+                    prefix: index_
                   object_store: s3
                   schema: v11
+                  store: boltdb-shipper
+                - from: "2024-06-01"
                   index:
-                    prefix: loki_index_
                     period: 24h
-
-              storageConfig:
-                boltdb_shipper:
-                  active_index_directory: /var/loki/index
-                  cache_location: /var/loki/cache
-                  cache_ttl: 24h
-                  shared_store: s3
-
-                aws:
-                  s3: s3://${accesskey}:${secretkey}@minio.minio.svc.cluster.local:9000
-                  s3forcepathstyle: true
-                  bucketnames: loki
-            distributor:
-              extraArgs:
-                - -config.expand-env=true
-              extraEnvFrom:
-                - secretRef:
-                    name: minio-creds
+                    prefix: loki_index_
+                  object_store: s3
+                  schema: v13
+                  store: tsdb
+              pattern_ingester:
+                enabled: true
+            test:
+              enabled: false
+            lokiCanary:
+              enabled: false
+            serviceAccount:
+              name: loki
             gateway:
-              extraArgs:
-                - -config.expand-env=true
-              extraEnvFrom:
-                - secretRef:
-                    name: minio-creds
-              enabled: true
               basicAuth:
                 enabled: true
                 existingSecret: loki-gateway-auth
@@ -162,306 +85,113 @@ spec:
                   - secretName: loki-gateway-tls
                     hosts:
                       - loki.devops.local
+            write:
+              replicas: 0
+            read:
+              replicas: 0
+            backend:
+              replicas: 0
             ingester:
+              replicas: 1
+              extraArgs:  
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enabled: true
+                claims:
+                  - name: data
+                    size: 2Gi
+                  - name: wal
+                    size: 2Gi
+            distributor:
+              replicas: 1
               extraArgs:
-                - -config.expand-env=true
+                - "-config.expand-env=true"
               extraEnvFrom:
                 - secretRef:
                     name: minio-creds
             querier:
+              replicas: 1
               extraArgs:
-                - -config.expand-env=true
+                - "-config.expand-env=true"
               extraEnvFrom:
                 - secretRef:
                     name: minio-creds
+              persistence:
+                enabled: true
             queryFrontend:
+              replicas: 1
               extraArgs:
-                - -config.expand-env=true
+                - "-config.expand-env=true"
               extraEnvFrom:
                 - secretRef:
                     name: minio-creds
-
-              # storage_config:
-              #   boltdb_shipper:
-              #     active_index_directory: /data/loki/index
-              #     shared_store: s3
-              #   aws:
-              #     s3: s3://minioadmin:
-            #   # extraArgs:
-            #   #   - '-config.expand-env=true'
-            #   # extraEnvFrom:
-            #   #   - minio-creds
-            #   config: |
-            #     auth_enabled: true
-            #     common:
-            #       compactor_address: {{ include "loki.compactorFullname" . }}:3100
-            #
-            #     schema_config:
-            #       configs:
-            #       - from: 2020-05-15
-            #         store: boltdb-shipper
-            #         object_store: s3
-            #         schema: v11
-            #         index:
-            #           prefix: loki_index_
-            #           period: 24h
-            #
-            #     storage_config:
-            #       boltdb_shipper:
-            #         active_index_directory: /var/loki/index
-            #         cache_location: /var/loki/cache
-            #         cache_ttl: 24h
-            #         shared_store: s3
-            #
-            #       aws:
-            #         s3: s3://${accesskey}:${secretkey}@minio.minio.svc.cluster.local:9000
-            #         s3forcepathstyle: true
-            #         bucketnames: loki
-            #
-            # #     frontend_worker:
-            #       {{- if .Values.queryScheduler.enabled }}
-            #       scheduler_address: {{ include "loki.querySchedulerFullname" . }}:9095
-            #       {{- else }}
-            #       frontend_address: {{ include "loki.queryFrontendFullname" . }}-headless:9095
-            #       {{- end }}
-            #
-            #     distributor:
-            #       ring:
-            #         kvstore:
-            #           store: memberlist
-            #
-            #     compactor:
-            #       working_directory: /var/loki/compactor
-            #       shared_store: s3
-            #
-            #     memberlist:
-            #       join_members:
-            #         - {{ include "loki.fullname" . }}-memberlist
-            #
-            #     ingester_client:
-            #       grpc_client_config:
-            #         grpc_compression: gzip
-            #
-            #     ingester:
-            #       lifecycler:
-            #         ring:
-            #           kvstore:
-            #             store: memberlist
-            #           replication_factor: 1
-            #       chunk_idle_period: 30m
-            #       chunk_block_size: 262144
-            #       chunk_encoding: snappy
-            #       chunk_retain_period: 1m
-            #       max_transfer_retries: 0
-            #       wal:
-            #         dir: /var/loki/wal
-            #
-            #     ruler:
-            #       storage:
-            #         type: s3
-            #         s3:
-            #           s3: s3://minioadmin:minioadmin@minio.minio.svc.cluster.local:9000/loki-rules
-            #           s3forcepathstyle: true
-            #
-            #
-            # loki:
-            #   config:
-            #     schema_config:
-            #       configs:
-            #         - from: 2020-10-24
-            #           store: boltdb-shipper
-            #           object_store: s3
-            #           schema: v11
-            #           index:
-            #             prefix: index_
-            #             period: 168h
-            #     storage_config:
-            #       boltdb_shipper:
-            #         active_index_directory: /data/loki/index
-            #         shared_store: s3
-            #       aws:
-            #         s3: s3://minioadmin:minioadmin@minio.minio.svc.cluster.local:9000
-            #         bucketnames: loki
-            #         # endpoint: minio.default.svc.cluster.local:9000
-            #         # region: us-east-1
-            #         s3forcepathstyle: true
-            #
-            # ingester:
-            #   # extraArgs:
-            #   #   - '-config.expand-env=true'
-            #   # extraEnvFrom:
-            #   #   - minio-creds
-            # distributor:
-            #   # extraArgs:
-            #   #   - '-config.expand-env=true'
-            #   # extraEnvFrom:
-            #   #   - minio-creds
-            # querier:
-            #   # extraArgs:
-            #   #   - '-config.expand-env=true'
-            #   # extraEnvFrom:
-            #   #   - minio-creds
-            # querierFrontend:
-            #   # extraArgs:
-            #   #   - '-config.expand-env=true'
-            #   # extraEnvFrom:
-            #   #   - minio-creds
-            # queryScheduler:
-            #   # extraArgs:
-            #   #   - '-config.expand-env=true'
-            #   # extraEnvFrom:
-            #   #   - minio-creds
-            # tableManager:
-            #   enabled: false
-            #   # extraArgs:
-            #   #   - '-config.expand-env=true'
-            #   # extraEnvFrom:
-            #   #   - minio-creds
-            # gateway:
-            #   # extraArgs:
-            #   #   - '-config.expand-env=true'
-            #   # extraEnvFrom:
-            #   #   - minio-creds
-            #   enabled: true
-            #   basicAuth:
-            #     enabled: true
-            #     existingSecret: loki-gateway-auth
-            #   ingress:
-            #     enabled: true
-            #     ingressClassName: nginx
-            #     annotations:
-            #       cert-manager.io/cluster-issuer: devops-local
-            #     hosts:
-            #       - host: loki.devops.local
-            #         paths:
-            #           - path: /
-            #             pathType: ImplementationSpecific
-            #     tls:
-            #       - secretName: loki-gateway-tls
-            #         hosts:
-            #           - loki.devops.local
-            # compactor:
-            #   # extraArgs:
-            #   #   - '-config.expand-env=true'
-            #   # extraEnvFrom:
-            #   #   - minio-creds
-            # ruler:
-            #   enabled: true
-            #   # extraArgs:
-            #   #   - '-config.expand-env=true'
-            #   # extraEnvFrom:
-            #   #   - minio-creds
-            #   directories:
-            #     devops-toys:
-            #       rules1.txt: |
-            #         groups:
-            #           - name: should_fire
-            #             rules:
-            #               - alert: HighPercentageError
-            #                 expr: |
-            #                   sum(rate({app="foo", env="production"} |= "error" [5m])) by (job)
-            #                     /
-            #                   sum(rate({app="foo", env="production"}[5m])) by (job)
-            #                     > 0.05
-            #                 for: 10m
-            #                 labels:
-            #                   severity: warning
-            #                 annotations:
-            #                   summary: High error rate
-            #           - name: credentials_leak
-            #             rules:
-            #               - alert: http-credentials-leaked
-            #                 annotations:
-            #                   message: "{{ $labels.job }} is leaking http basic auth credentials."
-            #                 expr: 'sum by (cluster, job, pod) (count_over_time({namespace="prod"} |~ "http(s?)://(\\w+):(\\w+)@" [5m]) > 0)'
-            #                 for: 10m
-            #                 labels:
-            #                   severity: critical
-            # indexGateway:
-            #   # extraArgs:
-            #   #   - '-config.expand-env=true'
-            #   # extraEnvFrom:
-            #   #   - minio-creds
-            # memcachedExporter:
-            #   enabled: true
-            #
-            # loki:
-            #   # extraArgs:
-            #   #   - '-config.expand-env=true'
-            #   # extraEnvFrom:
-            #   #   - minio-creds
-            #   config: |
-            #     auth_enabled: true
-            #     common:
-            #       compactor_address: {{ include "loki.compactorFullname" . }}:3100
-            #
-            #     schema_config:
-            #       configs:
-            #       - from: 2020-05-15
-            #         store: boltdb-shipper
-            #         object_store: s3
-            #         schema: v11
-            #         index:
-            #           prefix: loki_index_
-            #           period: 24h
-            #
-            #     storage_config:
-            #       boltdb_shipper:
-            #         active_index_directory: /var/loki/index
-            #         cache_location: /var/loki/cache
-            #         cache_ttl: 24h
-            #         shared_store: s3
-            #
-            #       aws:
-            #         s3: s3://${accesskey}:${secretkey}@minio.minio.svc.cluster.local:9000
-            #         s3forcepathstyle: true
-            #         bucketnames: loki
-            #
-            #     frontend_worker:
-            #       {{- if .Values.queryScheduler.enabled }}
-            #       scheduler_address: {{ include "loki.querySchedulerFullname" . }}:9095
-            #       {{- else }}
-            #       frontend_address: {{ include "loki.queryFrontendFullname" . }}-headless:9095
-            #       {{- end }}
-            #
-            #     distributor:
-            #       ring:
-            #         kvstore:
-            #           store: memberlist
-            #
-            #     compactor:
-            #       working_directory: /var/loki/compactor
-            #       shared_store: s3
-            #
-            #     memberlist:
-            #       join_members:
-            #         - {{ include "loki.fullname" . }}-memberlist
-            #
-            #     ingester_client:
-            #       grpc_client_config:
-            #         grpc_compression: gzip
-            #
-            #     ingester:
-            #       lifecycler:
-            #         ring:
-            #           kvstore:
-            #             store: memberlist
-            #           replication_factor: 1
-            #       chunk_idle_period: 30m
-            #       chunk_block_size: 262144
-            #       chunk_encoding: snappy
-            #       chunk_retain_period: 1m
-            #       max_transfer_retries: 0
-            #       wal:
-            #         dir: /var/loki/wal
-            #
-            #     ruler:
-            #       storage:
-            #         type: s3
-            #         s3:
-            #           s3: s3://minioadmin:minioadmin@minio.minio.svc.cluster.local:9000/loki-rules
-            #           s3forcepathstyle: true
-            #
+            queryScheduler:
+              replicas: 2
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+            indexGateway:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enabled: true
+            compactor:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enable: true
+            bloomGateway:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enabled: true
+            bloomCompactor:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enabled: true
+                claims:
+                  - name: data
+                    size: 2Gi
+                  - name: wal
+                    size: 2Gi
+            patternIngester:
+              replicas: 1
+              extraArgs:
+                - "-config.expand-env=true"
+              extraEnvFrom:
+                - secretRef:
+                    name: minio-creds
+              persistence:
+                enabled: true
+            ruler:
+              enabled: false
+            monitoring:
+              dashboards:
+                enabled: true
+              serviceMonitor:
+                enabled: true
       syncPolicy:
         automated:
           selfHeal: true
