@@ -27,6 +27,14 @@ spec:
             nameOverride: "grafana"
             fullnameOverride: "grafana"
             envFromSecret: grafana-loki-tenants
+            grafana:
+              grafana.ini:
+                feature_toggles:
+                  enable: featureToggleAdminPage lokiPredefinedOperations lokiLogsDataplane
+                feature_management:
+                  allow_editing: true
+              plugins:
+                - https://storage.googleapis.com/integration-artifacts/grafana-lokiexplore-app/grafana-lokiexplore-app-latest.zip;grafana-lokiexplore-app
             admin:
               existingSecret: grafana-admin
               userKey: GRAFANA_ADMIN_USER
