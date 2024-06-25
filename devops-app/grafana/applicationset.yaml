@@ -50,7 +50,7 @@ spec:
               size: 10Gi
             plugins:
               - digrich-bubblechart-panel
-              - explore-logs
+              - grafana-lokiexplore-app
               - grafana-clock-panel
               - grafana-piechart-panel
             datasources:
