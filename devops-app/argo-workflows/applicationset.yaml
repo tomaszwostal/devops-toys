@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argo-workflows
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-argo-workflows'
+    spec:
+      project: core
+      destination:
+        namespace: argo-workflows
+        server: '{{url}}'
+      source:
+        repoURL: https://argoproj.github.io/argo-helm
+        chart: argo-workflows
+        targetRevision: 0.*.*
+        helm:
+          releaseName: argo-workflows
+          values: |-
+            nameOverride: argo-workflows
+            fullnameOverride: argo-workflows
+            createAggregateRoles: true
+            controller:
+              namespaced: false
+              metrics:
+                enabled: true
+                serviceMonitor:
+                  enabled: true
+            webhook:
+              enabled: false
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+          - RespectIgnoreDifferences=true
+
