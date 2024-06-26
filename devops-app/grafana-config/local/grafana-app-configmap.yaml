@@ -4,7 +4,7 @@ metadata:
   name: grafana-app-configmap
   namespace: grafana
 data:
-  app.yaml: |
+  apps.yaml: |
     apiVersion: 1
     apps:
       - type: "grafana-lokiexplore-app"
