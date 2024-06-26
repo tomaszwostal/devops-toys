@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-app-configmap
+  namespace: grafana
+data:
+  app.yaml: |
+    apiVersion: 1
+    apps:
+      - type: "grafana-lokiexplore-app"
+        org_id: 1
+        org_name: "Grafana"
+        disabled: false
+        jsonData:
+          apiUrl: http://default-url.com
+          isApiKeySet: true
+        secureJsonData:
+          apiKey: secret-key

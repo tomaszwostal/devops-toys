@@ -56,6 +56,12 @@ spec:
               accessModes:
                 - ReadWriteOnce
               size: 10Gi
+            extraConfigmapMounts:
+              - name: grafana-app-configmap
+                mountPath: /etc/grafana/provisioning
+                subPath: app.yaml
+                configMap: grafana-app-configmap
+                readOnly: true
             plugins:
               - digrich-bubblechart-panel
               - grafana-clock-panel
