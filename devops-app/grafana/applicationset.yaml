@@ -58,7 +58,7 @@ spec:
               size: 10Gi
             extraConfigmapMounts:
               - name: grafana-app-configmap
-                mountPath: /etc/grafana/provisioning
+                mountPath: /etc/grafana/provisioning/
                 subPath: apps.yaml
                 configMap: grafana-app-configmap
                 readOnly: false
