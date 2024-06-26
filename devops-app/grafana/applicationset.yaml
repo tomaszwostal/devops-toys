@@ -59,7 +59,7 @@ spec:
             extraConfigmapMounts:
               - name: grafana-app-configmap
                 mountPath: /etc/grafana/provisioning
-                subPath: app.yaml
+                #subPath:
                 configMap: grafana-app-configmap
                 readOnly: true
             plugins:
