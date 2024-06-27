@@ -28,7 +28,7 @@ spec:
             fullnameOverride: "grafana-loki"
             deploymentMode: Distributed
             loki:
-              auth_enabled: false
+              auth_enabled: true
               limits_config:
                 volume_enabled: true
                 allow_structured_metadata: true
