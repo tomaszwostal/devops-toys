@@ -111,6 +111,14 @@ spec:
               dashboardproviders.yaml:
                 apiVersion: 1
                 providers:
+                - name: 'argo-cd'
+                  orgId: 1
+                  folder: 'Argo CD'
+                  type: file
+                  disableDeletion: true
+                  editable: true
+                  options:
+                    path: /var/lib/grafana/dashboards/grafana-argo-cd-dashboards
                 - name: 'grafana-loki'
                   orgId: 1
                   folder: 'Grafana Loki'
@@ -168,6 +176,23 @@ spec:
                   options:
                     path: /var/lib/grafana/dashboards/grafana-dashboards-cert-manager
             dashboards:
+              grafana-argo-cd-dashboards:
+                argo-cd-application-overview:
+                  gnetId: 19974
+                  revision: 2
+                  datasource: Mimir
+                argo-cd-notifications-overview:
+                  gnetId: 19975
+                  revision: 2
+                  datasource: Mimir
+                argo-cd-operational-overview:
+                  gnetId: 19993
+                  revision: 2
+                  datasource: Mimir
+                argo-cd:
+                  gnetId: 14584
+                  revision: 1
+                  datasource: Mimir
               grafana-dashboards-cert-manager:
                 cert-manager-overview:
                   gnetId: 20842
