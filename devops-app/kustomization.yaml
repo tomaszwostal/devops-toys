@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - argo-cd
   - argo-events
-  # - argo-workflows
+  - argo-workflows
   # - bootstrap
   - cert-manager
   - cert-manager-config
