@@ -26,6 +26,13 @@ spec:
           values: |-
             nameOverride: argo-workflows
             fullnameOverride: argo-workflows
+            controller:
+              metricsConfig:
+                enabled: true
+              telemetryConfig:
+                enabled: true
+              serviceMonitor:
+                enabled: true
       syncPolicy:
         automated:
           selfHeal: true
