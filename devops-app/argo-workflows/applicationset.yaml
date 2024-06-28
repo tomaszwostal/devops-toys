@@ -28,40 +28,40 @@ spec:
             fullnameOverride: argo-workflows
             crds:
               install: true
-            artifactRepository:
-              archiveLogs: true
-              s3:
-                bucket: argo-artifacts
-                endpoint: minio.minio.svc.cluster.local:9000
-                insecure: true
-                accessKeySecret:
-                  name: minio
-                  key: accesskey
-                secretKeySecret:
-                  name: minio
-                  key: secretkey
-            singleNamespace: false
-            # rbac:
-            #   create: true
-            #   accessAllSecrets: true
-            #   writeConfigmaps: true
-            workflow:
-              serviceAccount:
-                create: true
-                name: argo-workflow
-              rbac:
-                create: true
-            controller:
-              rbac:
-                create: true
-                accessAllSecrets: true
-                writeConfigMaps: true
-              workflowNamespaces:
-                - argo
-                - workflows
-              workflowDefaults:
-                spec:
-                  serviceAccountName: argo-workflow
+            # artifactRepository:
+            #   archiveLogs: true
+            #   s3:
+            #     bucket: argo-artifacts
+            #     endpoint: minio.minio.svc.cluster.local:9000
+            #     insecure: true
+            #     accessKeySecret:
+            #       name: minio
+            #       key: accesskey
+            #     secretKeySecret:
+            #       name: minio
+            #       key: secretkey
+            # singleNamespace: false
+            # # rbac:
+            # #   create: true
+            # #   accessAllSecrets: true
+            # #   writeConfigmaps: true
+            # workflow:
+            #   serviceAccount:
+            #     create: true
+            #     name: argo-workflow
+            #   rbac:
+            #     create: true
+            # controller:
+            #   rbac:
+            #     create: true
+            #     accessAllSecrets: true
+            #     writeConfigMaps: true
+            #   workflowNamespaces:
+            #     - argo
+            #     - workflows
+            #   workflowDefaults:
+            #     spec:
+            #       serviceAccountName: argo-workflow
             # controller:
             #   metricsConfig:
             #     enabled: true
@@ -77,26 +77,26 @@ spec:
             #     enabled: true
             #     useReleaseName: false
             #     explicitID: "local.devops"
-        server:
-          enabled: true
-          authModes:
-            - server
-          ingress:
-            enabled: true
-            annotations:
-              cert-manager.io/cluster-issuer: local.devops
-              # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-              # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-            ingressClassName: nginx
-            hosts:
-              - ci.local.devops
-            paths:
-              - /
-            pathType: Prefix
-            tls:
-              - secretName: tls-ci.local.devops
-                hosts:
-                  - ci.local.devops
+        # server:
+        #   enabled: true
+        #   authModes:
+        #     - server
+        #   ingress:
+        #     enabled: true
+        #     annotations:
+        #       cert-manager.io/cluster-issuer: local.devops
+        #       # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+        #       # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+        #     ingressClassName: nginx
+        #     hosts:
+        #       - ci.local.devops
+        #     paths:
+        #       - /
+        #     pathType: Prefix
+        #     tls:
+        #       - secretName: tls-ci.local.devops
+        #         hosts:
+        #           - ci.local.devops
       syncPolicy:
         automated:
           selfHeal: true
