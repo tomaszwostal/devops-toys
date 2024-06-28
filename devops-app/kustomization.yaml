@@ -5,6 +5,7 @@ resources:
   - argo-cd
   - argo-events
   - argo-workflows
+  - argo-workflows-confgi
   # - bootstrap
   - cert-manager
   - cert-manager-config
