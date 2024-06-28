@@ -21,7 +21,8 @@ spec:
   
   backup:
     barmanObjectStore:
-      destinationPath: http://minio.minio.svc.cluster.local:9000/argo-workflows/psql-argo-workflows
+      destinationPath: "s3://argo-workflows/pgql-argo-workflows"
+      endpointURL: "http://minio.minio.svc.cluster.local:9000/
       s3Credentials:
         accessKeyId:
           name: minio-creds
