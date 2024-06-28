@@ -21,13 +21,13 @@ spec:
         repoURL: https://argoproj.github.io/argo-helm
         chart: argo
         targetRevision: 0.*.*
-      syncPolicy:
-        automated:
-          selfHeal: true
-          prune: true
-          allowEmpty: false
-        syncOptions:
-          - CreateNamespace=true
-          - ServerSideApply=true
-          - RespectIgnoreDifferences=true
+    syncPolicy:
+      automated:
+        selfHeal: true
+        prune: true
+        allowEmpty: false
+      syncOptions:
+        - CreateNamespace=true
+        - ServerSideApply=true
+        - RespectIgnoreDifferences=true
 
