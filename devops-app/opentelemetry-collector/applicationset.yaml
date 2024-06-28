@@ -31,6 +31,7 @@ spec:
               repository: otel/opentelemetry-collector-k8s
             command:
               name: otelcol-k8s
+      syncPolicy:
         automated:
           selfHeal: true
           prune: true
