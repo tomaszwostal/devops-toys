@@ -1,0 +1,20 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: argo-workflows
+  namespace: argo
+spec:
+  instances: 3
+  startDelay: 300
+  stopDelay: 300
+  primaryUpdateStrategy: unsupervised
+
+  bootstrap:
+    initdb:
+      database: argo-workflows
+      owner: argo-workflows
+      dataChecksums: true
+  storage:
+    size: 1Gi
+  monitoring:
+    enablePodMonitor: true
