@@ -21,6 +21,8 @@ spec:
         repoURL: https://argoproj.github.io/argo-helm
         chart: argo
         targetRevision: 0.*.*
+        helm:
+          releaseName: argo-workflows
       syncPolicy:
         automated:
           selfHeal: true
