@@ -186,8 +186,8 @@ spec:
             dashboards:
               grafana-argo-workflows-dashboards:
                 argo-workflows-metrics:
-                  gnetId: 20348
-                  revision: 4
+                  url: https://raw.githubusercontent.com/tomaszwostal/devops-toys/v0.2/devops-app/grafana-config/dashboards/argo-workflows-20348.json
+                  token: ''
                   datasource: Mimir
               grafana-argo-cd-dashboards:
                 argo-cd-application-overview:
