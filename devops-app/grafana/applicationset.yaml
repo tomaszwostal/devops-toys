@@ -119,6 +119,14 @@ spec:
                   editable: true
                   options:
                     path: /var/lib/grafana/dashboards/grafana-argo-cd-dashboards
+                - name: 'argo-workflows'
+                  orgId: 1
+                  folder: 'Argo Workflows'
+                  type: file
+                  disableDeletion: true
+                  editable: true
+                  options:
+                    path: /var/lib/grafana/dashboards/grafana-argo-workflows-dashboards
                 - name: 'grafana-loki'
                   orgId: 1
                   folder: 'Grafana Loki'
@@ -176,6 +184,11 @@ spec:
                   options:
                     path: /var/lib/grafana/dashboards/grafana-dashboards-cert-manager
             dashboards:
+              grafana-argo-workflows-dashboards:
+                argo-workflows-metrics:
+                  gnetId: 13927
+                  revision: 4
+                  datasource: Mimir
               grafana-argo-cd-dashboards:
                 argo-cd-application-overview:
                   gnetId: 19974
