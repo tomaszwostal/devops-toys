@@ -13,20 +13,19 @@ spec:
     metadata:
       name: '{{cluster}}-argo-workflows'
     spec:
-      project: core
+      project: default
       destination:
-        namespace: argo-workflows
+        namespace: argo
         server: '{{url}}'
       source:
         repoURL: https://argoproj.github.io/argo-helm
-        chart: argo
-        targetRevision: 0.41.11
+        chart: argo-workflows
+        targetRevision: 0.*.*
         helm:
           releaseName: argo-workflows
-          values: |
-            crds:
-              install: true
-              keep: false
+          values: |-
+            nameOverride: argo-workflows
+            fullnameOverride: argo-workflows
       syncPolicy:
         automated:
           selfHeal: true
@@ -35,5 +34,4 @@ spec:
         syncOptions:
           - CreateNamespace=true
           - ServerSideApply=false
-          - RespectIgnoreDifferences=true
 
