@@ -111,6 +111,14 @@ spec:
               dashboardproviders.yaml:
                 apiVersion: 1
                 providers:
+                - name: 'cnpg'
+                  orgId: 1
+                  folder: 'Cloud Native PostgreSQL'
+                  type: file
+                  disableDeletion: true
+                  editable: true
+                  options:
+                    path: /var/lib/grafana/dashboards/grafana-cpng-dashboards
                 - name: 'argo-cd'
                   orgId: 1
                   folder: 'Argo CD'
@@ -184,6 +192,11 @@ spec:
                   options:
                     path: /var/lib/grafana/dashboards/grafana-dashboards-cert-manager
             dashboards:
+              grafana-cnpg-dashboards:
+                cloud-native-postgresql:
+                  gnetId: 20417
+                  revision: 2
+                  datasource: Mimir
               grafana-argo-workflows-dashboards:
                 argo-workflows-metrics:
                   url: https://raw.githubusercontent.com/tomaszwostal/devops-toys/v0.2/devops-app/grafana-config/dashboards/argo-workflows-20348.json
