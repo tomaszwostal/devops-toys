@@ -118,7 +118,7 @@ spec:
                   disableDeletion: true
                   editable: true
                   options:
-                    path: /var/lib/grafana/dashboards/grafana-cpng-dashboards
+                    path: /var/lib/grafana/dashboards/grafana-cnpg-dashboards
                 - name: 'argo-cd'
                   orgId: 1
                   folder: 'Argo CD'
