@@ -27,7 +27,7 @@ spec:
             nameOverride: argo-workflows
             fullnameOverride: argo-workflows
             crds:
-              install: true
+              install: false
             # artifactRepository:
             #   archiveLogs: true
             #   s3:
