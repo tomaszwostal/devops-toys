@@ -186,7 +186,7 @@ spec:
             dashboards:
               grafana-argo-workflows-dashboards:
                 argo-workflows-metrics:
-                  gnetId: 13927
+                  gnetId: 20348
                   revision: 4
                   datasource: Mimir
               grafana-argo-cd-dashboards:
