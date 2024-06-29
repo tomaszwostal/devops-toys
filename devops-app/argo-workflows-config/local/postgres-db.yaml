@@ -32,10 +32,8 @@ spec:
           key: secretkey
       wal:
         compression: gzip
-        encryption: AES256
       data:
         compression: gzip
-        encryption: AES256
         jobs: 2
     retentionPolicy: "7d"
 ---
