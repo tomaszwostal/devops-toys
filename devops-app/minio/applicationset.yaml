@@ -27,7 +27,7 @@ spec:
             nameOverride: minio
             fullnameOverride: minio
             mode: standalone
-            defaultBuckets: "mimir-blocks, loki, argo-workflows"
+            defaultBuckets: "mimir-blocks, mimir-alertmanager, mimir-ruler, loki, argo-workflows"
             metrics:
               serviceMonitor:
                 enabled: true
