@@ -200,7 +200,7 @@ spec:
                   options:
                     path: /var/lib/grafana/dashboards/grafana-dashboards-linkerd
             dashboards:
-              grafana-linkerd:
+              grafana-dashboards-linkerd:
                 top-line:
                   gnetId: 15474
                   revision: 4
