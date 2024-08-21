@@ -191,7 +191,88 @@ spec:
                   editable: true
                   options:
                     path: /var/lib/grafana/dashboards/grafana-dashboards-cert-manager
+                - name: 'grafana-dashboards-linkerd'
+                  orgId: 1
+                  folder: 'Linkerd'
+                  type: file
+                  disableDeletion: true
+                  editable: true
+                  options:
+                    path: /var/lib/grafana/dashboards/grafana-dashboards-linkerd
             dashboards:
+              grafana-linkerd:
+                top-line:
+                  gnetId: 15474
+                  revision: 4
+                  datasource: Mimir
+                health:
+                  gnetId: 15486
+                  revision: 3
+                  datasource: Mimir
+                kubernetes:
+                  gnetId: 15479
+                  revision: 2
+                  datasource: Mimir
+                namespace:
+                  gnetId: 15478
+                  revision: 3
+                  datasource: Mimir
+                deployment:
+                  gnetId: 15475
+                  revision: 6
+                  datasource: Mimir
+                pod:
+                  gnetId: 15477
+                  revision: 3
+                  datasource: Mimir
+                service:
+                  gnetId: 15480
+                  revision: 3
+                  datasource: Mimir
+                route:
+                  gnetId: 15481
+                  revision: 3
+                  datasource: Mimir
+                authority:
+                  gnetId: 15482
+                  revision: 3
+                  datasource: Mimir
+                cronjob:
+                  gnetId: 15483
+                  revision: 3
+                  datasource: Mimir
+                job:
+                  gnetId: 15487
+                  revision: 3
+                  datasource: Mimir
+                daemonset:
+                  gnetId: 15484
+                  revision: 3
+                  datasource: Mimir
+                replicaset:
+                  gnetId: 15491
+                  revision: 3
+                  datasource: Mimir
+                statefulset:
+                  gnetId: 15493
+                  revision: 3
+                  datasource: Mimir
+                replicationcontroller:
+                  gnetId: 15492
+                  revision: 4
+                  datasource: Mimir
+                prometheus:
+                  gnetId: 15489
+                  revision: 2
+                  datasource: Mimir
+                prometheus-benchmark:
+                  gnetId: 15490
+                  revision: 2
+                  datasource: Mimir
+                multicluster:
+                  gnetId: 15488
+                  revision: 3
+                  datasource: Mimir
               grafana-cnpg-dashboards:
                 cloud-native-postgresql:
                   gnetId: 20417
