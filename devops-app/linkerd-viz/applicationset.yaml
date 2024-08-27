@@ -25,7 +25,7 @@ spec:
           releaseName: linkerd-viz
           values: |-
             prometheusUrl: http://prometheus-prometheus.monitoring.svc.cluster.local:9090
-            #jaegerUrl: http://jaeger-query.jaeger.svc.cluster.local
+            jaegerUrl: jaeger-query.jaeger.svc.cluster.local:80
             dashboard:
               enforcedHostRegexp: linkerd-viz.devops.local
             grafana:
@@ -38,7 +38,6 @@ spec:
               injectCaFrom: linkerd-viz/linkerd-tap-injector
             prometheus:
               enabled: false
-            jaegerUrl: "https://jaeger.devops.local"
       syncPolicy:
         automated:
           selfHeal: true
