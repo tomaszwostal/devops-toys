@@ -30,6 +30,7 @@ spec:
               enforcedHostRegexp: linkerd-viz.devops.local
             grafana:
               externalUrl: https://grafana.devops.local
+            jaegerUrl: https://jaeger.devops.local
             tap:
               externalSecret: true
               injectCaFrom: linkerd-viz/tap
