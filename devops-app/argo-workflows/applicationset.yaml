@@ -34,6 +34,8 @@ spec:
               serviceMonitor:
                 enabled: true
             server:
+              authModes:
+                - server
               ingress:
                 enabled: true
                 ingressClassName: nginx
