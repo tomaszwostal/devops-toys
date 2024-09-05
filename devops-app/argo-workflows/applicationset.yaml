@@ -35,6 +35,29 @@ spec:
             controller:
               workflowNamespaces:
                 - argo
+              persistence:
+                connectionPool:
+                  maxIdleConns: 100
+                  maxOpenConns: 0
+                  connMaxLifetime: 0s # 0 means connections don't have a max lifetime
+                nodeStatusOffLoad: false
+                archive: true
+                archiveTTL: 30d
+                skipMigration: false
+                clusterName: default
+                postgresql:
+                  host: pgsql-argo-workflows-rw
+                  port: 5432
+                  database: argo-workflows
+                  tableName: argo_workflows
+                  userNameSecret:
+                    name: pgsql-argo-workflows-app
+                    key: username
+                  passwordSecret:
+                    name: pgsql-argo-workflows-app
+                    key: password
+                  ssl: true
+                  sslMode: require
               metricsConfig:
                 enabled: true
               telemetryConfig:
