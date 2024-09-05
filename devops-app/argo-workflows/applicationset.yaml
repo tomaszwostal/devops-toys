@@ -26,7 +26,15 @@ spec:
           values: |-
             nameOverride: argo-workflows
             fullnameOverride: argo-workflows
+            workflow:
+              serviceAccount:
+                create: true
+                name: "argo-workflow"
+              rbac:
+                create: true
             controller:
+              workflowNamespaces:
+                - argo
               metricsConfig:
                 enabled: true
               telemetryConfig:
