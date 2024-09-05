@@ -26,6 +26,18 @@ spec:
           values: |-
             nameOverride: argo-workflows
             fullnameOverride: argo-workflows
+            useStaticCredentials: true
+            archiveLogs: true
+            s3:
+              endpoint: minio.minio.svc.cluster.local:9000
+              bucket: argo-workflows
+              accessKeySecret:
+                name: minio-creds
+                key: accesskey
+              secretKeySecret:
+                name: minio-creds
+                key: secretkey
+              insecure: true
             workflow:
               serviceAccount:
                 create: true
