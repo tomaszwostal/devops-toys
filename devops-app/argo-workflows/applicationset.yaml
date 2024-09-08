@@ -26,8 +26,8 @@ spec:
           values: |-
             nameOverride: argo-workflows
             fullnameOverride: argo-workflows
-            useStaticCredentials: false
-            archiveRepository:
+            useStaticCredentials: true
+            artifactRepository:
               archiveLogs: true
               s3:
                 endpoint: minio.minio.svc.cluster.local:9000
