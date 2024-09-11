@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - argo-cd
   - argo-events
+  - argo-rollouts
   - argo-workflows
   - argo-workflows-config
   # - bootstrap
