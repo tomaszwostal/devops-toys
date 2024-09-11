@@ -206,6 +206,20 @@ grafana-promtail:
 
 argo-workflows:
 	kubectl create namespace argo
+	kubectl --namespace argo create secret docker-registry dockerhub-secret \
+  --docker-server=https://index.docker.io/v1/ \
+  --docker-username=${DOCKERHUB_USERNAME} \
+  --docker-password=${DOCKERHUB_TOKEN} \
+  --docker-email=${GITHUB_EMAIL} \
+  --output json \
+	--dry-run=client | \
+	kubeseal --format yaml \
+	--controller-name=sealed-secrets \
+	--controller-namespace=sealed-secrets | \
+	tee ./devops-app/argo-workflows-config/local/dockerhub-secret.yaml
+	kubectl apply -f ./devops-app/argo-workflows-config/local/dockerhub-secret.yaml
+	git add ./devops-app/argo-workflows-config/local/dockerhub-secret.yaml
+	git commit -m "Add dockerhub credentials"
 	kubectl --namespace argo \
 		create secret \
 		generic minio-creds \
