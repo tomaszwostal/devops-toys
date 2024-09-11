@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argo-rollouts
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}-argo-rollouts'
+    spec:
+      project: default
+      destination:
+        namespace: argo-rollouts
+        server: '{{url}}'
+      source:
+        repoURL: https://argoproj.github.io/argo-helm
+        chart: argo-rollouts
+        targetRevision: 0.*.*
+        helm:
+          releaseName: argo-rollouts
+          values: |-
+            nameOverride: argo-rollouts
+            fullnameOverride: argo-rollouts
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+
