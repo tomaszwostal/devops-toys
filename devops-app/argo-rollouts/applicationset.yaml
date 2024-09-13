@@ -26,6 +26,13 @@ spec:
           values: |-
             nameOverride: argo-rollouts
             fullnameOverride: argo-rollouts
+            controller:
+              trafficRouterPlugins: |-
+              # trafficRouterPlugins: |-
+              #   - name: "argoproj-labs/sample-nginx" # name of the plugin, it must match the name required by the plugin so it can find it's configuration
+              #     location: "file://./my-custom-plugin" # supports http(s):// urls and file://
+                - name: "argoproj-labs/gatewayAPI"
+                  location: "https://github.com/argoproj-labs/rollouts-plugin-trafficrouter-gatewayapi/releases/download/v0.4.0/gateway-api-plugin-linux-amd64"
       syncPolicy:
         automated:
           selfHeal: true
