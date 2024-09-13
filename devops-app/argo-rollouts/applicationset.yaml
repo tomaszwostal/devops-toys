@@ -26,6 +26,19 @@ spec:
           values: |-
             nameOverride: argo-rollouts
             fullnameOverride: argo-rollouts
+            extraObjects:
+              - apiVersion: rbac.authorization.k8s.io/v1
+                kind: ClusterRole
+                metadata:
+                  name: argo-controller-role
+                  namespace: argo-rollouts
+                rules:
+                  - apiGroups:
+                      - gateway.networking.k8s.io
+                    resources:
+                      - httproutes
+                    verbs:
+                      - "*"
             controller:
               trafficRouterPlugins:
                 - name: "argoproj-labs/gatewayAPI"
