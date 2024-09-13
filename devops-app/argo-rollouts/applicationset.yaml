@@ -20,37 +20,37 @@ spec:
       source:
         repoURL: https://argoproj.github.io/argo-helm
         chart: argo-rollouts
-        targetRevision: 0.*.*
+        targetRevision: 2.37.6
         helm:
           releaseName: argo-rollouts
           values: |-
             nameOverride: argo-rollouts
             fullnameOverride: argo-rollouts
-            extraObjects:
-              - apiVersion: rbac.authorization.k8s.io/v1
-                kind: ClusterRole
-                metadata:
-                  name: argo-controller-role
-                  namespace: argo-rollouts
-                rules:
-                  - apiGroups:
-                      - gateway.networking.k8s.io
-                    resources:
-                      - httproutes
-                    verbs:
-                      - "*"
-              - apiVersion: rbac.authorization.k8s.io/v1
-                kind: ClusterRoleBinding
-                metadata:
-                  name: argo-controller
-                roleRef:
-                  apiGroup: rbac.authorization.k8s.io
-                  kind: ClusterRole
-                  name: argo-controller-role
-                subjects:
-                  - namespace: argo-rollouts
-                    kind: ServiceAccount
-                    name: argo-rollouts
+            # extraObjects:
+            #   - apiVersion: rbac.authorization.k8s.io/v1
+            #     kind: ClusterRole
+            #     metadata:
+            #       name: argo-controller-role
+            #       namespace: argo-rollouts
+            #     rules:
+            #       - apiGroups:
+            #           - gateway.networking.k8s.io
+            #         resources:
+            #           - httproutes
+            #         verbs:
+            #           - "*"
+            #   - apiVersion: rbac.authorization.k8s.io/v1
+            #     kind: ClusterRoleBinding
+            #     metadata:
+            #       name: argo-controller
+            #     roleRef:
+            #       apiGroup: rbac.authorization.k8s.io
+            #       kind: ClusterRole
+            #       name: argo-controller-role
+            #     subjects:
+            #       - namespace: argo-rollouts
+            #         kind: ServiceAccount
+            #         name: argo-rollouts
             controller:
               trafficRouterPlugins:
                 - name: "argoproj-labs/gatewayAPI"
