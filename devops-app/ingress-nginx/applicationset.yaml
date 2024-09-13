@@ -27,6 +27,8 @@ spec:
             nameOverride: "ingress-nginx"
             fullnameOverride: "ingress-nginx"
             controller:
+              annotations:
+                linkerd-injection: enabled
               enableSnippets: true
               allowSnippetAnnotations: true
               opentelemetry:
