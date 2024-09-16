@@ -37,14 +37,14 @@ spec:
                 includeCollectorLogs: true
               hostMetrics:
                 enabled: true
-            kubernetesAttributes:
-              enabled: true
-              extractAllPodLabels: true
-              extractAllPodAnnotations: true
-            kubernetesEvents:
-              enabled: true
-            clusterMetrics:
-              enabled: true
+              kubernetesAttributes:
+                enabled: true
+                extractAllPodLabels: true
+                extractAllPodAnnotations: true
+              kubernetesEvents:
+                enabled: true
+              clusterMetrics:
+                enabled: true
       syncPolicy:
         automated:
           selfHeal: true
