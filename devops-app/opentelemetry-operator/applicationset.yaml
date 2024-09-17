@@ -27,7 +27,7 @@ spec:
             nameOverride: "opentelemetry-operator"
             fullnameOverride: "opentelemetry-operator"
             manager:
-              featureGates: "operator.autoinstrumentation.go"
+              featureGates: "operator.golang.flags, operator.observability.prometheus"
               collectorImage:
                 repository: otel/opentelemetry-collector-k8s
               serviceMonitor:
