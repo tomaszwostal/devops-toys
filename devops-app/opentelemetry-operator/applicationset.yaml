@@ -27,6 +27,7 @@ spec:
             nameOverride: "opentelemetry-operator"
             fullnameOverride: "opentelemetry-operator"
             manager:
+              featureGates: "operator.autoinstrumentation.go"
               collectorImage:
                 repository: otel/opentelemetry-collector-k8s
               serviceMonitor:

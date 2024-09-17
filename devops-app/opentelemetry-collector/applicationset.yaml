@@ -29,8 +29,6 @@ spec:
             mode: deployment
             image:
               repository: otel/opentelemetry-collector-k8s
-            manager:
-              featureGates: "operator.autoinstrumentation.go"
             command:
               name: otelcol-k8s
             presets:
