@@ -26,10 +26,10 @@ spec:
           values: |-
             nameOverride: "opentelemetry-operator"
             fullnameOverride: "opentelemetry-operator"
-            # manager:
-            #   featureGates: "operator.golang.flags"
-            #   collectorImage:
-            #     repository: otel/opentelemetry-collector-k8s
+            manager:
+              featureGates: "operator.golang.flags"
+              collectorImage:
+                repository: otel/opentelemetry-collector-k8s
             #   serviceMonitor:
             #     enabled: true
             #     metricsEndpoints:
