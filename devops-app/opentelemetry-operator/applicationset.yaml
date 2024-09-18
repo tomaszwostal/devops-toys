@@ -26,12 +26,12 @@ spec:
           values: |-
             nameOverride: "opentelemetry-operator"
             fullnameOverride: "opentelemetry-operator"
-            admissionWebhooks:
-              create: false
-              servicePort: 443
-              failurePolicy: Fail
-              secretName: opentelemetry-operator-controller-manager-service-cert
             manager:
+              admissionWebhooks:
+                certManager:
+                  enabled: false
+                autoGenerateCert:
+                  enabled: true
               featureGates: "operator.golang.flags"
               collectorImage:
                 repository: otel/opentelemetry-collector-k8s

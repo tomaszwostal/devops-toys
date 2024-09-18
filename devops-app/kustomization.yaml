@@ -38,8 +38,8 @@ resources:
   # - sonarqube
   - trust-manager
   # - redis
-  # - opentelemetry-operator
-  # - opentelemetry-collector
+  - opentelemetry-operator
+  - opentelemetry-collector
   # - openfeature
   # - openfeature-demo
   # - otel-demo
