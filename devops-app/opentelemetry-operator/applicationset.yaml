@@ -26,6 +26,11 @@ spec:
           values: |-
             nameOverride: "opentelemetry-operator"
             fullnameOverride: "opentelemetry-operator"
+            admissionWebhooks:
+              create: true
+              servicePort: 443
+              failurePolicy: Fail
+              secretName: opentelemetry-operator-controller-manager-service-cert
             manager:
               featureGates: "operator.golang.flags"
               collectorImage:
