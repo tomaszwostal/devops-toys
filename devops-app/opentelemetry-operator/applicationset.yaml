@@ -28,7 +28,7 @@ spec:
             fullnameOverride: "opentelemetry-operator"
             admissionWebhooks:
               certManager:
-                enabled: false
+                enabled: true
               autoGenerateCert:
                 enabled: false
             manager:
