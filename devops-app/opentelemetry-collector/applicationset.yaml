@@ -27,24 +27,24 @@ spec:
             nameOverride: "opentelemetry-collector"
             fullnameOverride: "opentelemetry-collector"
             mode: deployment
-            image:
-              repository: otel/opentelemetry-collector-k8s
-            command:
-              name: otelcol-k8s
-            presets:
-              logsCollection:
-                enabled: true
-                includeCollectorLogs: true
-              hostMetrics:
-                enabled: true
-              kubernetesAttributes:
-                enabled: true
-                extractAllPodLabels: true
-                extractAllPodAnnotations: true
-              kubernetesEvents:
-                enabled: true
-              clusterMetrics:
-                enabled: true
+            # image:
+            #   repository: otel/opentelemetry-collector-k8s
+            # command:
+            #   name: otelcol-k8s
+            # presets:
+            #   logsCollection:
+            #     enabled: true
+            #     includeCollectorLogs: true
+            #   hostMetrics:
+            #     enabled: true
+            #   kubernetesAttributes:
+            #     enabled: true
+            #     extractAllPodLabels: true
+            #     extractAllPodAnnotations: true
+            #   kubernetesEvents:
+            #     enabled: true
+            #   clusterMetrics:
+            #     enabled: true
       syncPolicy:
         automated:
           selfHeal: true
