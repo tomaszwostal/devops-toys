@@ -26,12 +26,12 @@ spec:
           values: |-
             nameOverride: "opentelemetry-operator"
             fullnameOverride: "opentelemetry-operator"
+            admissionWebhooks:
+              certManager:
+                enabled: false
+              autoGenerateCert:
+                enabled: true
             manager:
-              admissionWebhooks:
-                certManager:
-                  enabled: false
-                autoGenerateCert:
-                  enabled: true
               featureGates: "operator.golang.flags"
               collectorImage:
                 repository: otel/opentelemetry-collector-k8s
