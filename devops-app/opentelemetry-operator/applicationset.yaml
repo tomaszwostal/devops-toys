@@ -28,9 +28,9 @@ spec:
             fullnameOverride: "opentelemetry-operator"
             admissionWebhooks:
               certManager:
-                enabled: false
-              autoGenerateCert:
                 enabled: true
+              autoGenerateCert:
+                enabled: false
             manager:
               featureGates: "operator.golang.flags"
               collectorImage:
