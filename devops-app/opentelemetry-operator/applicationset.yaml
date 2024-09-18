@@ -27,7 +27,7 @@ spec:
             nameOverride: "opentelemetry-operator"
             fullnameOverride: "opentelemetry-operator"
             admissionWebhooks:
-              create: true
+              create: false
               servicePort: 443
               failurePolicy: Fail
               secretName: opentelemetry-operator-controller-manager-service-cert
