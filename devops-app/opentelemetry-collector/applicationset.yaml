@@ -31,8 +31,8 @@ spec:
               repository: otel/opentelemetry-collector-k8s
             config:
               exporters:
-                debug:
-                  verbosity: detailed
+                # debug:
+                #   verbosity: detailed
                 otlp:
                   endpoint: jaeger-collector.jaeger.svc.cluster.local:4317
                   tls:
