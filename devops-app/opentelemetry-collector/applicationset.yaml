@@ -37,10 +37,10 @@ spec:
                   endpoint: jaeger-collector.jaeger.svc.cluster.local:4317
                   tls:
                     insecure: true
-                otlphttp:
-                  endpoint: http://jaeger-collector.jaeger.svc.cluster.local:4318
-                  tls:
-                    insecure: true
+                # otlphttp:
+                #   endpoint: http://jaeger-collector.jaeger.svc.cluster.local:4318
+                #   tls:
+                #     insecure: true
             # command:
             #   name: otelcol-k8s
             # presets:
