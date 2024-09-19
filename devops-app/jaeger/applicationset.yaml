@@ -28,7 +28,7 @@ spec:
               cassandra: false
               elasticsearch: true
 
-            storage
+            storage:
               type: elasticsearch
 
             nameOverride: "jaeger"
