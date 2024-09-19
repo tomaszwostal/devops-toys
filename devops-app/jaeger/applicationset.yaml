@@ -28,6 +28,9 @@ spec:
               cassandra: false
               elasticsearch: true
 
+            storage
+              type: elasticsearch
+
             nameOverride: "jaeger"
             fullnameOverride: "jaeger"
 
@@ -121,7 +124,7 @@ spec:
                 enabled: false
 
             hotrod:
-              enabled: true
+              enabled: false
               replicaCount: 1
               extraArgs:
                 - --otel-exporter=otlp
