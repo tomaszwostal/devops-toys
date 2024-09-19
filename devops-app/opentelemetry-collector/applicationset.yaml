@@ -29,6 +29,14 @@ spec:
             mode: deployment
             image:
               repository: otel/opentelemetry-collector-k8s
+            config:
+              exporters:
+                debug:
+                  verbosity: detailed
+                otlp:
+                  endpoint: jaeger-collector.jaeger.svc.cluster.local:4317
+                  tls:
+                    insecure: true
             # command:
             #   name: otelcol-k8s
             # presets:
