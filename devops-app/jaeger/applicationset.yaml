@@ -25,7 +25,8 @@ spec:
           releaseName: jaeger
           values: |-
             provisionDataStore:
-              cassandra: true
+              cassandra: false
+              elasticsearch: true
 
             nameOverride: "jaeger"
             fullnameOverride: "jaeger"
