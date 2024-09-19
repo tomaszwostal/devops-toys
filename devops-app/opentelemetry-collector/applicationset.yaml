@@ -44,20 +44,11 @@ spec:
               #       - collector.devops.local
             image:
               repository: otel/opentelemetry-collector-k8s
-            service:
-             pipelines:
-               traces:
-                 exporters:
-                   - otlp
-                 processors:
-                   - batch
-                 receivers:
-                   - otlp
-                   - jaeger
+
             config:
               exporters:
-                # debug:
-                #   verbosity: detailed
+                debug:
+                  verbosity: detailed
                 otlp:
                   endpoint: jaeger-collector.jaeger.svc.cluster.local:4317
                   tls:
