@@ -38,10 +38,10 @@ spec:
                     - path: /
                       pathType: Prefix
                       port: 4318
-              tls:
-                - secretName: collector-tls
-                  hosts:
-                    - collector.devops.local
+              # tls:
+              #   - secretName: collector-tls
+              #     hosts:
+              #       - collector.devops.local
             image:
               repository: otel/opentelemetry-collector-k8s
             config:
