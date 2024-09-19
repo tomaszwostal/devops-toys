@@ -57,6 +57,40 @@ spec:
                 #   endpoint: http://jaeger-collector.jaeger.svc.cluster.local:4318
                 #   tls:
                 #     insecure: true
+              service:
+                telemetry:
+                  metrics:
+                    address: ${env:MY_POD_IP}:8888
+                extensions:
+                  - health_check
+                pipelines:
+                  logs:
+                    exporters:
+                      - debug
+                    processors:
+                      - memory_limiter
+                      - batch
+                    receivers:
+                      - otlp
+                  metrics:
+                    exporters:
+                      - debug
+                    processors:
+                      - memory_limiter
+                      - batch
+                    receivers:
+                      - otlp
+                      - prometheus
+                  traces:
+                    exporters:
+                      - otlp
+                    processors:
+                      - memory_limiter
+                      - batch
+                    receivers:
+                      - otlp
+                      - jaeger
+                      - zipkin
             # command:
             #   name: otelcol-k8s
             # presets:
