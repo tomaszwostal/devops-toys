@@ -27,6 +27,21 @@ spec:
             nameOverride: "opentelemetry-collector"
             fullnameOverride: "opentelemetry-collector"
             mode: deployment
+            ingress:
+              enabled: true
+              annotations:
+                cert-manager.io/cluster-issuer: "devops-local"
+              ingressClassName: nginx
+              hosts:
+                - host: collector.devops.local
+                  paths:
+                    - path: /
+                      pathType: Prefix
+                      port: 4318
+              tls:
+                - secretName: collector-tls
+                  hosts:
+                    - collector.devops.local
             image:
               repository: otel/opentelemetry-collector-k8s
             config:
