@@ -54,7 +54,7 @@ spec:
                   - job_name: plats
                     pipelineStages:
                     - match:
-                      selector: '{app.kubernetes.io/name="plants"}'
+                      selector: '{app="hotrod"}'
                       stages:
                       - regex:
                           expression: "otelTraceID":\s*"([a-f0-9]+)"
