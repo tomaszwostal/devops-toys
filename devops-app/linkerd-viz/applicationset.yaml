@@ -25,7 +25,7 @@ spec:
           releaseName: linkerd-viz
           values: |-
             prometheusUrl: http://prometheus-prometheus.monitoring.svc.cluster.local:9090
-            jaegerUrl: jaeger-query.jaeger.svc.cluster.local:80
+            jaegerUrl: https://jaeager.devops.local
             dashboard:
               enforcedHostRegexp: linkerd-viz.devops.local
             grafana:

@@ -25,41 +25,41 @@ spec:
           releaseName: linkerd-jaeger
           values: |-
             jaeger:
-              enabled: true
+              enabled: false
             # webhook:
             #   externalSecret: true
             #   injectCaFromSecret: cert-manager/linkerd-webhook-issuer-tls
-            # collector:
-            #   config: |
-            #     receivers:
-            #       otlp:
-            #         protocols:
-            #           grpc:
-            #           http:
-            #       opencensus:
-            #       zipkin:
-            #       jaeger:
-            #         protocols:
-            #           grpc:
-            #           thrift_http:
-            #           thrift_compact:
-            #           thrift_binary:
-            #     processors:
-            #       batch:
-            #     extensions:
-            #       health_check:
-            #     exporters:
-            #       jaeger:
-            #         endpoint: jaeger-collector.jaeger.svc.cluster.local:14250
-            #         tls:
-            #           insecure: true
-            #     service:
-            #       extensions: [health_check]
-            #       pipelines:
-            #         traces:
-            #           receivers: [otlp,opencensus,zipkin,jaeger]
-            #           processors: [batch]
-            #           exporters: [jaeger]
+            collector:
+              config: |
+                receivers:
+                  otlp:
+                    protocols:
+                      grpc:
+                      http:
+                  opencensus:
+                  zipkin:
+                  jaeger:
+                    protocols:
+                      grpc:
+                      thrift_http:
+                      thrift_compact:
+                      thrift_binary:
+                processors:
+                  batch:
+                extensions:
+                  health_check:
+                exporters:
+                  jaeger:
+                    endpoint: jaeger-collector.jaeger.svc.cluster.local:14250
+                    tls:
+                      insecure: true
+                service:
+                  extensions: [health_check]
+                  pipelines:
+                    traces:
+                      receivers: [otlp,opencensus,zipkin,jaeger]
+                      processors: [batch]
+                      exporters: [jaeger]
       syncPolicy:
         automated:
           selfHeal: true
