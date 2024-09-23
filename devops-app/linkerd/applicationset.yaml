@@ -24,6 +24,7 @@ spec:
         helm:
           releaseName: linkerd
           values: |-
+            cniEnabled: true
             enableEndpointSlices: false
             identity:
               externalCA: true
