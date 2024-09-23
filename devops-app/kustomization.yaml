@@ -21,7 +21,7 @@ resources:
   - grafana-mimir
   - grafana-mimir-config
   - ingress-nginx
-  - jaeger
+  # - jaeger
   - sealed-secrets
   - kube-prometheus-stack
   - linkerd-config
