@@ -57,7 +57,7 @@ spec:
                   extensions: [health_check]
                   pipelines:
                     traces:
-                      receivers: [otlp,opencensus,zipkin,jaeger]
+                      receivers: [otlp,zipkin,jaeger]
                       processors: [batch]
                       exporters: [jaeger]
       syncPolicy:
