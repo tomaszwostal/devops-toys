@@ -50,7 +50,7 @@ spec:
                 debug:
                   verbosity: detailed
                 otlp:
-                  endpoint: jaeger-collector.jaeger.svc.cluster.local:4317
+                  endpoint: collector.linkerd-jaeger.svc.cluster.local:4317
                   tls:
                     insecure: true
                 # otlphttp:
