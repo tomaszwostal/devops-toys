@@ -52,6 +52,14 @@ spec:
               snippets:
                 pipelineStages:
                   - cri: {}
+                  - match:
+                      selector: '{app="plants"}'
+                      stages:
+                      - regex:
+                          expression: ".*(?P<trace>otelTraceID\"\\S)\\s\"(?P<traceID>[a-zA-Z\\d]+).*"
+                          traceID: traceID
+                      - labels:
+                          traceID:
                 common:
                   - action: replace
                     source_labels:
@@ -92,14 +100,6 @@ spec:
                       - __meta_kubernetes_pod_annotation_kubernetes_io_config_hash
                       - __meta_kubernetes_pod_container_name
                     target_label: __path__
-                  - match:
-                      selector: '{app="plants"}'
-                      stages:
-                      - regex:
-                          expression: ".*(?P<trace>otelTraceID\"\\S)\\s\"(?P<traceID>[a-zA-Z\\d]+).*"
-                          traceID: traceID
-                      - labels:
-                          traceID:
               # snippets:
               #   extraScrapeConfig: |-
               #     - job_name: plats
