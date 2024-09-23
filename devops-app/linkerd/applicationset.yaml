@@ -29,9 +29,9 @@ spec:
               externalCA: true
               issuer:
                 scheme: kubernetes.io/tls
-            proxyInit:
-              iptablesMode: "legacy"
-              runAsRoot: true
+            # proxyInit:
+            #   iptablesMode: "legacy"
+            #   runAsRoot: true
             policyValidator:
               externalSecret: true
               injectCaFrom: linkerd/linkerd-policy-validator
