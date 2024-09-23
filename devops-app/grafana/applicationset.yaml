@@ -135,7 +135,7 @@ spec:
                     httpHeaderName1: 'X-Scope-OrgID'
                     derivedFields:
                     - datasourceUid: jaeger
-                      matcherRegex: "otelTraceID":\s*"([a-fA-F0-9]+)"
+                      matcherRegex: "otelTraceID=(\\w+)"
                       url: '$${__value.raw}'
                       name: TraceID
                   secureJsonData: 
