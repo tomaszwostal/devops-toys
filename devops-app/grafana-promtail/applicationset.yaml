@@ -60,14 +60,6 @@ spec:
                           traceID: traceID
                       - labels:
                           traceID:
-                  - match:
-                      selector: '{app="plants"}'
-                      stages:
-                      - regex:
-                          expression: ".*(?P<span>otelSpanID\"\\S)\\s\"(?P<spanID>[a-zA-Z\\d]+).*"
-                          traceID: spanID
-                      - labels:
-                          spanID:
                 common:
                   - action: replace
                     source_labels:
