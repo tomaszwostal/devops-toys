@@ -49,16 +49,16 @@ spec:
                   basic_auth:
                     password: ${LOKI_PASSWORD}
                     username: ${LOKI_USERNAME}
-              snippets:
-                pipelineStages:
-                  - match:
-                    selector: '{app.kubernetes.io/name="plants"}'
-                    stages:
-                    - regex:
-                        expression: "otelTraceID":\s*"([a-f0-9]+)"
-                        traceID: traceID
-                    - labels:
-                        traceID:
+              # snippets:
+              #   pipelineStages:
+              #     - match:
+              #       selector: '{app.kubernetes.io/name="plants"}'
+              #       stages:
+              #       - regex:
+              #           expression: "otelTraceID":\s*"([a-f0-9]+)"
+              #           traceID: traceID
+              #       - labels:
+              #           traceID:
       syncPolicy:
         automated:
           selfHeal: true
