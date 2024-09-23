@@ -50,17 +50,68 @@ spec:
                     password: ${LOKI_PASSWORD}
                     username: ${LOKI_USERNAME}
               snippets:
-                extraScrapeConfig: |-
-                  - job_name: plats
-                    pipelineStages:
-                    - match:
-                      selector: '{app="hotrod"}'
+                pipelineStages:
+                  - cri: {}
+                common:
+                  - action: replace
+                    source_labels:
+                      - __meta_kubernetes_pod_node_name
+                    target_label: node_name
+                  - action: replace
+                    source_labels:
+                      - __meta_kubernetes_namespace
+                    target_label: namespace
+                  - action: replace
+                    replacement: $1
+                    separator: /
+                    source_labels:
+                      - namespace
+                      - app
+                    target_label: job
+                  - action: replace
+                    source_labels:
+                      - __meta_kubernetes_pod_name
+                    target_label: pod
+                  - action: replace
+                    source_labels:
+                      - __meta_kubernetes_pod_container_name
+                    target_label: container
+                  - action: replace
+                    replacement: /var/log/pods/*$1/*.log
+                    separator: /
+                    source_labels:
+                      - __meta_kubernetes_pod_uid
+                      - __meta_kubernetes_pod_container_name
+                    target_label: __path__
+                  - action: replace
+                    replacement: /var/log/pods/*$1/*.log
+                    regex: true/(.*)
+                    separator: /
+                    source_labels:
+                      - __meta_kubernetes_pod_annotationpresent_kubernetes_io_config_hash
+                      - __meta_kubernetes_pod_annotation_kubernetes_io_config_hash
+                      - __meta_kubernetes_pod_container_name
+                    target_label: __path__
+                  - match:
+                      selector: '{app="plants"}'
                       stages:
                       - regex:
-                          expression: "otelTraceID":\s*"([a-f0-9]+)"
+                          expression: ".*(?P<trace>otelTraceID\"\\S)\\s\"(?P<traceID>[a-zA-Z\\d]+).*"
                           traceID: traceID
                       - labels:
                           traceID:
+              # snippets:
+              #   extraScrapeConfig: |-
+              #     - job_name: plats
+              #       pipelineStages:
+              #       - match:
+              #         selector: '{app="hotrod"}'
+              #         stages:
+              #         - regex:
+              #             expression: "otelTraceID":\s*"([a-f0-9]+)"
+              #             traceID: traceID
+              #         - labels:
+              #             traceID:
       syncPolicy:
         automated:
           selfHeal: true
