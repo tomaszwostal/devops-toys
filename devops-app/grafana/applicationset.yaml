@@ -94,6 +94,11 @@ spec:
                   jsonData:
                     maxLines: 1000
                     httpHeaderName1: 'X-Scope-OrgID'
+                    derivedFields:
+                    - datasourceUid: jaeger
+                      matcherRegex: ((\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+)(\d+|[a-z]+))
+                      url: '$${__value.raw}'
+                      name: TraceID
                   secureJsonData: 
                     httpHeaderValue1: $__env{LOKI_TENANT_1_ID}
                 - name: Loki_Tenant_2
