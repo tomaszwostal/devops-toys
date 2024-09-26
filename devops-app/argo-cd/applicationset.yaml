@@ -26,6 +26,12 @@ spec:
           values: |-
             nameOverride: argocd
             fullnameOverride: argocd
+            configs:
+              exec.enabled: true
+              statusbadge.enabled: true
+              params:
+                applicationsetcontroller.policy: sync
+                applicationsetcontroller.enable.progressive.syncs: true
             controller:
               metrics:
                 enabled: true
