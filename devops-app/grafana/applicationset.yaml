@@ -52,7 +52,7 @@ spec:
                   hosts:
                     - 'grafana.devops.local'
             persistence:
-              enabled: true
+              enabled: false
               accessModes:
                 - ReadWriteOnce
               size: 10Gi
