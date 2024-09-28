@@ -26,6 +26,19 @@ spec:
           values: |-
             nameOverride: argocd
             fullnameOverride: argocd
+            extraObjects:
+              - apiVersion: v1
+                kind: Secret
+                metadata:
+                  labels:
+                    argocd.argoproj.io/secret-type: repository
+                  name: docker-io-helm-oci
+                  namespace: argocd
+                stringData:
+                  url: registry-1.docker.io/bitnamicharts
+                  name: bitnamicharts
+                  type: helm
+                  enableOCI: "true"
             configs:
               exec.enabled: true
               statusbadge.enabled: true
@@ -84,6 +97,7 @@ spec:
                     release: prometheus
             notifications:
               enabled: true
+            
       syncPolicy:
         automated:
           selfHeal: true
