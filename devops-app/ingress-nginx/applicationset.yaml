@@ -27,7 +27,7 @@ spec:
             valueFiles:
             - $values/devops-app/ingress-nginx-config/{{cluster}}/values.yaml
         - repoURL: https://github.com/tomaszwostal/devops-toys.git
-          targetRevision: HEAD
+          targetRevision: v0.2
           ref: values
       syncPolicy:
         automated:
