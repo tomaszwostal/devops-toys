@@ -9,6 +9,8 @@ spec:
       elements:
       - cluster: local
         url: https://kubernetes.default.svc
+      - cluster: ci
+        url: https://c640dbea-09c9-41c7-b6cd-99d80f39cac8.k8s.ondigitalocean.com
   template:
     metadata:
       name: '{{cluster}}-sealed-secrets'
