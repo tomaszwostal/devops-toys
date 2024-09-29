@@ -8,7 +8,7 @@ spec:
     - port: 12000
       targetPort: 12000
   github:
-    any-github-event:
+    pull_request:
       repositories:
         - owner: tomasz-wostal-eu
           names:
