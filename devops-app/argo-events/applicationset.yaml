@@ -19,24 +19,17 @@ spec:
       destination:
         namespace: argo-events
         server: '{{url}}'
-      source:
-        repoURL: https://argoproj.github.io/argo-helm
-        chart: argo-events
-        targetRevision: 2.*.*
-        helm:
-          releaseName: argo-events
-          values: |-
-            nameOverride: argo-events
-            fullnameOverride: argo-events
-            createAggregateRoles: true
-            controller:
-              namespaced: false
-              metrics:
-                enabled: true
-                serviceMonitor:
-                  enabled: true
-            webhook:
-              enabled: false
+      sources:
+        - repoURL: https://argoproj.github.io/argo-helm
+          chart: argo-events
+          targetRevision: 2.*.*
+          helm:
+            releaseName: argo-events
+            valueFiles:
+              - $values/devops-app/argo-events/{{cluster}}/values.yaml
+        - repoURL: https://github.com/tomaszwostal/devops-toys.git
+          targetRevision: v0.2
+          ref: values
       syncPolicy:
         automated:
           selfHeal: true
