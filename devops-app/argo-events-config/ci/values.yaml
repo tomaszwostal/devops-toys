@@ -8,4 +8,4 @@ controller:
     serviceMonitor:
       enabled: true
 webhook:
-  enabled: false
+  enabled: true
