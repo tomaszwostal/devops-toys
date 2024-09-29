@@ -35,7 +35,7 @@ spec:
           targetRevision: v0.2
         - repoURL: https://aureq.github.io/cert-manager-webhook-ovh/
           chart: cert-manager-webhook-ovh
-          targetRevision: 0.*.*
+          targetRevision: 0.7.0
           helm:
             releaseName: cm-webhook-ovh
             valueFiles:
