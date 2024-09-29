@@ -4,6 +4,8 @@ metadata:
   name: github-pr-opened-sensor
   namespace: argo-events
 spec:
+  template:
+    serviceAccountName: operate-workflow-sa
   dependencies:
     - name: github-pull-request
       eventSourceName: fpi
