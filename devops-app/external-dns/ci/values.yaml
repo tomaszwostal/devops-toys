@@ -13,9 +13,3 @@ sources:
 provider: ovh
 ovh:
   secretName: ovh
-metrics:
-  enabled: true
-  serviceMonitor:
-    enabled: true
-    labels:
-        release: {{cluster}}-prometheus-stack
