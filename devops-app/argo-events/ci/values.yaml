@@ -9,5 +9,3 @@ controller:
       enabled: true
 webhook:
   enabled: true
-extraObjects:
- - 
