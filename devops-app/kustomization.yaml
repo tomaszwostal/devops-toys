@@ -6,7 +6,6 @@ resources:
   - argo-events
   - argo-rollouts
   - argo-workflows
-  - argo-workflows-config
   # - bootstrap
   - cert-manager
   - cnpg
