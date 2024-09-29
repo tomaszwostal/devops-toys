@@ -6,7 +6,7 @@ metadata:
 spec:
   dependencies:
     - name: github-pull-request
-      eventSourceName: github-webhook
+      eventSourceName: fpi
       eventName: pull_request
       filters:
         data:
