@@ -38,6 +38,8 @@ spec:
           targetRevision: 0.*.*
           helm:
             releaseName: cm-webhook-ovh
+            valueFiles:
+              - $values/devops-app/external-dns/{{cluster}}/values-webhook.yaml
       ignoreDifferences:
         - group: cert-manager.io
           kind: Certificate
