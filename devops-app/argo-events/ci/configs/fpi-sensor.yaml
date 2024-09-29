@@ -34,31 +34,23 @@ spec:
               spec:
                 serviceAccountName: argo-workflow
                 podGC:
-                  # Pod GC strategy must be one of the following:
-                  # * OnPodCompletion - delete pods immediately when pod is completed (including errors/failures)
-                  # * OnPodSuccess - delete pods immediately when pod is successful
-                  # * OnWorkflowCompletion - delete pods when workflow is completed
-                  # * OnWorkflowSuccess - delete pods when workflow is successful
-                  # Default: do not delete pods
                   strategy: OnWorkflowCompletion
-                  # The duration before pods in the GC queue get deleted. Defaults to 5s
-                  # Requires Argo >= 3.5
                   deleteDelayDuration: 30s
                 entrypoint: main
                 arguments:
                   parameters:
                     - name: pr_number
-                      value: "{{parameters.pr_number}}"
+                      value: "{{pr_number}}"
                     - name: pr_title
-                      value: "{{parameters.pr_title}}"
+                      value: "{{pr_title}}"
                     - name: pr_user
-                      value: "{{parameters.pr_user}}"
+                      value: "{{pr_user}}"
                     - name: sha
-                      value: "{{parameters.sha}}"
+                      value: "{{sha}}"
                     - name: branch
-                      value: "{{parameters.branch}}"
+                      value: "{{branch}}"
                     - name: target_branch
-                      value: "{{parameters.target_branch}}"
+                      value: "{{target_branch}}"
                 templates:
                   - name: main
                     inputs:
@@ -89,24 +81,24 @@ spec:
             - src:
                 dependencyName: github-pull-request
                 dataKey: body.number
-              dest: parameters.pr_number
+              dest: pr_number
             - src:
                 dependencyName: github-pull-request
                 dataKey: body.pull_request.title
-              dest: parameters.pr_title
+              dest: pr_title
             - src:
                 dependencyName: github-pull-request
                 dataKey: body.pull_request.user.login
-              dest: parameters.pr_user
+              dest: pr_user
             - src:
                 dependencyName: github-pull-request
                 dataKey: body.pull_request.head.sha
-              dest: parameters.sha
+              dest: sha
             - src:
                 dependencyName: github-pull-request
                 dataKey: body.pull_request.head.ref
-              dest: parameters.branch
+              dest: branch
             - src:
                 dependencyName: github-pull-request
                 dataKey: body.pull_request.base.ref
-              dest: parameters.target_branch
+              dest: target_branch
