@@ -9,7 +9,6 @@ resources:
   - argo-workflows-config
   # - bootstrap
   - cert-manager
-  - cert-manager-config
   - cnpg
   - devops-app
   - external-dns

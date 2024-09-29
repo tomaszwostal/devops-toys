@@ -1,0 +1,23 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-ovh
+spec:
+  acme:
+    email: tomasz.wostal@gmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-ovh-account-key
+    solvers:
+    - dns01:
+        ovh:
+          endpoint: ovh-eu
+          applicationKeySecretRef:
+            name: ovh
+            key: ovh_application_key
+          applicationSecretSecretRef:
+            name: ovh
+            key: ovh_application_secret
+          consumerKeySecretRef:
+            name: ovh
+            key: covh_consumer_key

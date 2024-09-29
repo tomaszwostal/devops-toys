@@ -19,26 +19,20 @@ spec:
       destination:
         namespace: cert-manager
         server: '{{url}}'
-      source:
-        repoURL: https://charts.jetstack.io
-        chart: cert-manager
-        targetRevision: v1.*.*
-        helm:
-          releaseName: cert-manager
-          values: |-
-            installCRDs: true
-            prometheus:
-              enabled: true
-              servicemonitor:
-                enabled: true
-                prometheusInstance: prometheus-prometheus
-                labels:
-                  release: prometheus
-              podmonitor:
-                enabled: false
-                prometheusInstance: prometheus-prometheus
-                labels:
-                  release: prometheus
+      sources:
+        - repoURL: https://charts.jetstack.io
+          chart: cert-manager
+          targetRevision: v1.*.*
+          helm:
+            releaseName: cert-manager
+            valueFiles:
+              - $values/devops-app/external-dns/{{cluster}}/values.yaml
+        - repoURL: https://github.com/tomaszwostal/devops-toys.git
+          targetRevision: v0.2
+          ref: values
+        - repoURL: https://github.com/tomaszwostal/devops-toys.git
+          path: devops-app/cert-manager/{{cluster}}/configs
+          targetRevision: v0.2
       ignoreDifferences:
         - group: cert-manager.io
           kind: Certificate
