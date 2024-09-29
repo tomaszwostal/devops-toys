@@ -21,7 +21,7 @@ spec:
       events:
         - "*"
       apiToken:
-        name: github-access
+        name: fpi-webhook-token
         key: token
       insecure: false
       active: true
