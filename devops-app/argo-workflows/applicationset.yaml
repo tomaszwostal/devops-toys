@@ -45,6 +45,9 @@ spec:
                 name: "argo-workflow"
               rbac:
                 create: true
+                serviceAccounts:
+                  - name: operate-workflow-sa
+                    namespace: argo-events
             controller:
               workflowNamespaces:
                 - argo
