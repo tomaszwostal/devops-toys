@@ -25,16 +25,16 @@ workflow:
 controller:
   workflowNamespaces:
     - argo
-  persistence:
-    connectionPool:
-      maxIdleConns: 100
-      maxOpenConns: 0
-      connMaxLifetime: 0s # 0 means connections don't have a max lifetime
-    nodeStatusOffLoad: false
-    archive: false
-    archiveTTL: 30d
-    skipMigration: false
-    clusterName: default
+  # persistence:
+  #   connectionPool:
+  #     maxIdleConns: 100
+  #     maxOpenConns: 0
+  #     connMaxLifetime: 0s # 0 means connections don't have a max lifetime
+  #   nodeStatusOffLoad: false
+  #   archive: false
+  #   archiveTTL: 30d
+  #   skipMigration: false
+  #   clusterName: default
     # postgresql:
     #   host: pgsql-argo-workflows-rw
     #   port: 5432
