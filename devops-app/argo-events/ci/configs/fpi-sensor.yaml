@@ -40,13 +40,17 @@ spec:
                 arguments:
                   parameters:
                     - name: pr_number
-                      value: "{{pr_number}}"
+                      value: ""
                     - name: pr_title
-                      value: "{{pr_title}}"
+                      value: ""
+                    - name: pr_url
+                      value: ""
                     - name: pr_user
-                      value: "{{pr_user}}"
+                      value: ""
                     - name: sha
-                      value: "{{sha}}"
+                      value: ""
+                    - name: short_sha
+                      value: ""
                     - name: branch
                       value: "{{branch}}"
                     - name: target_branch
@@ -57,48 +61,56 @@ spec:
                       parameters:
                         - name: pr_number
                         - name: pr_title
+                        - name: pr_url
                         - name: pr_user
                         - name: sha
+                        - name: short_sha
                         - name: branch
                         - name: target_branch
                     script:
                       image: alpine:3.14
                       command: [sh]
                       source: |
-                        # Extract the short SHA
-                        short_sha=$(echo "{{inputs.parameters.sha}}" | cut -c1-7)
-                        
                         echo "Pull Request Details:"
                         echo "----------------------"
                         echo "PR Number      : {{inputs.parameters.pr_number}}"
                         echo "Title          : {{inputs.parameters.pr_title}}"
+                        echo "Url            : {{inputs.parameters.pr_url}}"
                         echo "Author         : {{inputs.parameters.pr_user}}"
                         echo "SHA            : {{inputs.parameters.sha}}"
-                        echo "Short SHA      : $short_sha"
+                        echo "Short SHA      : {{inputs.parameters.short_sha}}"
                         echo "Source Branch  : {{inputs.parameters.branch}}"
                         echo "Target Branch  : {{inputs.parameters.target_branch}}"
           parameters:
             - src:
                 dependencyName: github-pull-request
-                dataKey: body.number
-              dest: pr_number
+                dataKey: body.pull_request.number
+              dest: spec.arguments.parameters.0.value
             - src:
                 dependencyName: github-pull-request
                 dataKey: body.pull_request.title
-              dest: pr_title
+              dest: spec.arguments.parameters.1.value
+            - src:
+                dependencyName: github-pull-request
+                dataKey: body.pull_request.html_url
+              dest: spec.arguments.parameters.2.value
             - src:
                 dependencyName: github-pull-request
                 dataKey: body.pull_request.user.login
-              dest: pr_user
+              dest: spec.arguments.parameters.3.value
             - src:
                 dependencyName: github-pull-request
                 dataKey: body.pull_request.head.sha
-              dest: sha
+              dest: spec.arguments.parameters.4.value
+            - src:
+                dependencyName: github-pull-request
+                dataTemplate: '{{ .Input.body.pull_request.head.sha | substr 0 7 }}'
+              dest: spec.arguments.parameters.5.value
             - src:
                 dependencyName: github-pull-request
                 dataKey: body.pull_request.head.ref
-              dest: branch
+              dest: spec.arguments.parameters.6.value
             - src:
                 dependencyName: github-pull-request
                 dataKey: body.pull_request.base.ref
-              dest: target_branch
+              dest: spec.arguments.parameters.7.value
