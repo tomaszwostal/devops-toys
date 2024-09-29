@@ -26,7 +26,7 @@ spec:
           helm:
             releaseName: cert-manager
             valueFiles:
-              - $values/devops-app/external-dns/{{cluster}}/values.yaml
+              - $values/devops-app/cert-manager/{{cluster}}/values.yaml
         - repoURL: https://github.com/tomaszwostal/devops-toys.git
           targetRevision: v0.2
           ref: values
@@ -39,7 +39,7 @@ spec:
           helm:
             releaseName: cm-webhook-ovh
             valueFiles:
-              - $values/devops-app/external-dns/{{cluster}}/values-webhook.yaml
+              - $values/devops-app/cert-manager/{{cluster}}/values-webhook.yaml
       ignoreDifferences:
         - group: cert-manager.io
           kind: Certificate
