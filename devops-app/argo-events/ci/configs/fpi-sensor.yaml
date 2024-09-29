@@ -25,7 +25,7 @@ spec:
     - template:
         name: github-pr-workflow-trigger
         argoWorkflow:
-          operation: submit
+          operation: create
           source:
             resource:
               apiVersion: argoproj.io/v1alpha1
