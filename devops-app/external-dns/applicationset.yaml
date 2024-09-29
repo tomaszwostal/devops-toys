@@ -23,7 +23,7 @@ spec:
           targetRevision: 8.*.*
           chart: external-dns
           helm:
-            ReleaseName: external-dns
+            releaseName: external-dns
             valueFiles:
               - $values/devops-app/external-dns/{{cluster}}/values.yaml
         - repoURL: https://github.com/tomaszwostal/devops-toys.git
