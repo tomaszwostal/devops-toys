@@ -37,70 +37,68 @@ spec:
                   strategy: OnWorkflowCompletion
                   deleteDelayDuration: 30s
                 entrypoint: main
-                # arguments:
-                #   parameters:
-                #     - name: pr_number
-                #       value: "{{pr_number}}"
-                #     - name: pr_title
-                #       value: "{{pr_title}}"
-                #     - name: pr_user
-                #       value: "{{pr_user}}"
-                #     - name: sha
-                #       value: "{{sha}}"
-                #     - name: branch
-                #       value: "{{branch}}"
-                #     - name: target_branch
-                #       value: "{{target_branch}}"
+                arguments:
+                  parameters:
+                    - name: pr_number
+                      value: "{{pr_number}}"
+                    - name: pr_title
+                      value: "{{pr_title}}"
+                    - name: pr_user
+                      value: "{{pr_user}}"
+                    - name: sha
+                      value: "{{sha}}"
+                    - name: branch
+                      value: "{{branch}}"
+                    - name: target_branch
+                      value: "{{target_branch}}"
                 templates:
                   - name: main
-                    # inputs:
-                    #   parameters:
-                    #     - name: pr_number
-                    #     - name: pr_title
-                    #     - name: pr_user
-                    #     - name: sha
-                    #     - name: branch
-                    #     - name: target_branch
-                    #
+                    inputs:
+                      parameters:
+                        - name: pr_number
+                        - name: pr_title
+                        - name: pr_user
+                        - name: sha
+                        - name: branch
+                        - name: target_branch
                     script:
                       image: alpine:3.14
                       command: [sh]
                       source: |
-                        echo "dupa"
                         # # Extract the short SHA
                         # short_sha=$(echo "{{inputs.parameters.sha}}" | cut -c1-7)
                         
-                        # echo "Pull Request Details:"
-                        # echo "----------------------"
-                        # echo "PR Number      : {{inputs.parameters.pr_number}}"
-                        # echo "Title          : {{inputs.parameters.pr_title}}"
-                        # echo "Author         : {{inputs.parameters.pr_user}}"
-                        # echo "SHA            : {{inputs.parameters.sha}}"
-                        # echo "Short SHA      : $short_sha"
-                        # echo "Source Branch  : {{inputs.parameters.branch}}"
-                        # echo "Target Branch  : {{inputs.parameters.target_branch}}"
-          # parameters:
-          #   - src:
-          #       dependencyName: github-pull-request
-          #       dataKey: body.number
-          #     dest: pr_number
-          #   - src:
-          #       dependencyName: github-pull-request
-          #       dataKey: body.pull_request.title
-          #     dest: pr_title
-          #   - src:
-          #       dependencyName: github-pull-request
-          #       dataKey: body.pull_request.user.login
-          #     dest: pr_user
-          #   - src:
-          #       dependencyName: github-pull-request
-          #       dataKey: body.pull_request.head.sha
-          #     dest: sha
-          #   - src:
-          #       dependencyName: github-pull-request
-          #       dataKey: body.pull_request.head.ref
-          #     dest: branch
-          #   - src:
-          #       dependencyName: github-pull-request
-          #       dataKey: body.pull_request.base.ref
-          #     dest: target_branch
+                        echo "Pull Request Details:"
+                        echo "----------------------"
+                        echo "PR Number      : {{inputs.parameters.pr_number}}"
+                        echo "Title          : {{inputs.parameters.pr_title}}"
+                        echo "Author         : {{inputs.parameters.pr_user}}"
+                        echo "SHA            : {{inputs.parameters.sha}}"
+                        echo "Short SHA      : $short_sha"
+                        echo "Source Branch  : {{inputs.parameters.branch}}"
+                        echo "Target Branch  : {{inputs.parameters.target_branch}}"
+          parameters:
+            - src:
+                dependencyName: github-pull-request
+                dataKey: body.number
+              dest: pr_number
+            - src:
+                dependencyName: github-pull-request
+                dataKey: body.pull_request.title
+              dest: pr_title
+            - src:
+                dependencyName: github-pull-request
+                dataKey: body.pull_request.user.login
+              dest: pr_user
+            - src:
+                dependencyName: github-pull-request
+                dataKey: body.pull_request.head.sha
+              dest: sha
+            - src:
+                dependencyName: github-pull-request
+                dataKey: body.pull_request.head.ref
+              dest: branch
+            - src:
+                dependencyName: github-pull-request
+                dataKey: body.pull_request.base.ref
+              dest: target_branch
