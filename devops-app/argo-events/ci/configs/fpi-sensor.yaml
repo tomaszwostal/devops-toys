@@ -23,7 +23,7 @@ spec:
     - template:
         name: github-pr-workflow-trigger
         argoWorkflow:
-          operation: create
+          operation: submit
           source:
             resource:
               apiVersion: argoproj.io/v1alpha1
@@ -37,36 +37,36 @@ spec:
                   strategy: OnWorkflowCompletion
                   deleteDelayDuration: 30s
                 entrypoint: main
-                arguments:
-                  parameters:
-                    - name: pr_number
-                      value: "{{pr_number}}"
-                    - name: pr_title
-                      value: "{{pr_title}}"
-                    - name: pr_user
-                      value: "{{pr_user}}"
-                    - name: sha
-                      value: "{{sha}}"
-                    - name: branch
-                      value: "{{branch}}"
-                    - name: target_branch
-                      value: "{{target_branch}}"
+                # arguments:
+                #   parameters:
+                #     - name: pr_number
+                #       value: "{{pr_number}}"
+                #     - name: pr_title
+                #       value: "{{pr_title}}"
+                #     - name: pr_user
+                #       value: "{{pr_user}}"
+                #     - name: sha
+                #       value: "{{sha}}"
+                #     - name: branch
+                #       value: "{{branch}}"
+                #     - name: target_branch
+                #       value: "{{target_branch}}"
                 templates:
                   - name: main
-                    inputs:
-                      parameters:
-                        - name: pr_number
-                        - name: pr_title
-                        - name: pr_user
-                        - name: sha
-                        - name: branch
-                        - name: target_branch
+                    # inputs:
+                    #   parameters:
+                    #     - name: pr_number
+                    #     - name: pr_title
+                    #     - name: pr_user
+                    #     - name: sha
+                    #     - name: branch
+                    #     - name: target_branch
                     script:
                       image: alpine:3.14
                       command: [sh]
                       source: |
-                        # # Extract the short SHA
-                        # short_sha=$(echo "{{inputs.parameters.sha}}" | cut -c1-7)
+                        # Extract the short SHA
+                        #short_sha=$(echo "{{inputs.parameters.sha}}" | cut -c1-7)
                         
                         echo "Pull Request Details:"
                         echo "----------------------"
