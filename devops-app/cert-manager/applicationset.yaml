@@ -33,7 +33,7 @@ spec:
         - repoURL: https://github.com/tomaszwostal/devops-toys.git
           path: devops-app/cert-manager/{{cluster}}/configs
           targetRevision: v0.2
-        - repoURL: https://aureq.github.io/cert-manager-webhook-ovh
+        - repoURL: https://aureq.github.io/cert-manager-webhook-ovh/
           chart: cert-manager-webhook-ovh-charts/cert-manager-webhook-ovh
           targetRevision: 0.*.*
           helm:
