@@ -9,9 +9,10 @@ resources:
 sources:
   - service
   - ingress
-provider: azure
-azure:
-  secretName: external-dns-hldx-io
+  - crd
+provider: ovh
+ovh:
+  secretName: ovh
 metrics:
   enabled: true
   serviceMonitor:
