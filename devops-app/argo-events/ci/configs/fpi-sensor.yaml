@@ -34,7 +34,6 @@ spec:
                 generateName: github-pr-workflow-
                 namespace: argo
               spec:
-                serviceAccountName: argo-workflow
                 podGC:
                   strategy: OnWorkflowCompletion
                   deleteDelayDuration: 30s
