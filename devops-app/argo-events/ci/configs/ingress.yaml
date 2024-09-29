@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: events-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    external-dns.alpha.kubernetes.io/hostname: events.devops.toys
+spec:
+  rules:
+  - host: events.devops.toys
+    http:
+      paths:
+      - path: /fpi
+        pathType: Prefix
+        backend:
+          service:
+            name: fpi-eventsource-svc
+            port:
+              number: 12000
+  tls:
+  - hosts:
+    - events.devops.toys
+    secretName: events-devops-toys-ingress-tls

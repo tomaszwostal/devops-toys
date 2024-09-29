@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: fpi
+spec:
+  service:
+    ports:
+    - port: 12000
+      targetPort: 12000
+  github:
+    any-github-event:
+      repositories:
+        - owner: tomasz-wostal-eu
+          names:
+            - fpi
+      webhook:
+        endpoint: /fpi
+        port: "12000"
+        method: POST
+        url: https://events.devops.toys
+      events:
+        - "*"
+      apiToken:
+        name: github-access
+        key: token
+      insecure: false
+      active: true
+      contentType: json
+      webhookSecret:
+        name: fpi-webhook-secret
+        key: secret

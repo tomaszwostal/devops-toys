@@ -30,6 +30,9 @@ spec:
         - repoURL: https://github.com/tomaszwostal/devops-toys.git
           targetRevision: v0.2
           ref: values
+        - repoURL: https://github.com/tomaszwostal/devops-toys.git
+          path: devops-app/argo-events/{{cluster}}/configs
+          targetRevision: v0.2
       syncPolicy:
         automated:
           selfHeal: true
