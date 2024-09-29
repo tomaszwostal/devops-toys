@@ -1,0 +1,11 @@
+nameOverride: argo-events
+fullnameOverride: argo-events
+createAggregateRoles: true
+controller:
+  namespaced: false
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+webhook:
+  enabled: false

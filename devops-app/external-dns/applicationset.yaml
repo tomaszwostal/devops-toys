@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: external-dns
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: ci
+        url: https://c640dbea-09c9-41c7-b6cd-99d80f39cac8.k8s.ondigitalocean.com
+  template:
+    metadata:
+      name: '{{cluster}}-external-dns'
+    spec:
+      project: core
+      destination:
+        namespace: external-dns
+        server: '{{url}}'
+      sources:
+        - repoURL: 'registry-1.docker.io/bitnamicharts'
+          path: 'external-dns'
+          targetRevision: 8.*.*
+          chart: external-dns
+          helm:
+            valueFiles:
+              - $values/devops-app/external-dns/{{cluster}}/values.yaml
+        - repoURL: https://github.com/tomaszwostal/devops-toys.git
+          targetRevision: v0.2
+          ref: values
+        - repoURL: https://github.com/tomaszwostal/devops-toys.git
+          path: devops-app/external-dns/{{cluster}}/configs
+          targetRevision: v0.2
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=false
+          - RespectIgnoreDifferences=true
+

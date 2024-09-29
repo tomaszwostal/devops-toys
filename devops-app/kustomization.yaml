@@ -12,6 +12,7 @@ resources:
   - cert-manager-config
   - cnpg
   - devops-app
+  - external-dns
   - grafana
   - grafana-config
   - grafana-loki
