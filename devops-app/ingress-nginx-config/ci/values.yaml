@@ -19,8 +19,6 @@ controller:
       enabled: true
       additionalLabels:
         release: prometheus
-  hostPort:
-    enabled: true
   terminationGracePeriodSeconds: 0
   watchIngressWithoutClass: true
 config:
