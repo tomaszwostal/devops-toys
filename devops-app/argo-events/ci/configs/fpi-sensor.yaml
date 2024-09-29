@@ -66,7 +66,7 @@ spec:
                       command: [sh]
                       source: |
                         # Extract the short SHA
-                        #short_sha=$(echo "{{inputs.parameters.sha}}" | cut -c1-7)
+                        short_sha=$(echo "{{inputs.parameters.sha}}" | cut -c1-7)
                         
                         echo "Pull Request Details:"
                         echo "----------------------"
