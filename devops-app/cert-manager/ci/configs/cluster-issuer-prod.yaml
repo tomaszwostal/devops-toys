@@ -1,23 +1,18 @@
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-ovh
+  name: letsencrypt-prod
 spec:
   acme:
-    email: tomasz.wostal@gmail.com
+    # The ACME server URL
     server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: tomasz.wostal@gmail.com
+    # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
-      name: letsencrypt-ovh-account-key
+      name: letsencrypt-prod
+    # Enable the HTTP-01 challenge provider
     solvers:
-    - dns01:
-        ovh:
-          endpoint: ovh-eu
-          applicationKeySecretRef:
-            name: ovh
-            key: ovh_application_key
-          applicationSecretSecretRef:
-            name: ovh
-            key: ovh_application_secret
-          consumerKeySecretRef:
-            name: ovh
-            key: covh_consumer_key
+    - http01:
+        ingress:
+          class: nginx
