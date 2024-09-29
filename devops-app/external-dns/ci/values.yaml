@@ -9,7 +9,6 @@ resources:
 sources:
   - service
   - ingress
-  - crd
 provider: ovh
 ovh:
   secretName: ovh
